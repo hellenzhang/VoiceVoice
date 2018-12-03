@@ -1,0 +1,23 @@
+{
+    "meta_arr":[
+        {
+            "id":0,
+            "name":"hero0",
+            "desc":"no!",
+            "coin":0,
+            "anim_url":"res/hero_ani/hero_0.ani",
+            "hit_rect":[0,0,80,180]
+
+        },
+        
+        {
+            "id":100,
+            "name":"mob0",
+            "desc":"no",
+            "hp":30,
+            "anim_url":"res/mob_ani/mob_100.ani",
+            "hit_rect":[0,0,100,118]
+        }
+        
+    ]
+}

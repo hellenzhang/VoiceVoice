@@ -1,0 +1,11 @@
+<res>
+   <item name="window/bg.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=37,10,11,24" picType="0" scale="0"/>
+   <item name="window/btn_close.png" type="Button" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="window/button.png" type="Button" compress="0" pack="0" quality="80" props="sizeGrid=5,7,4,8" picType="0" scale="0"/>
+   <item name="window/label.png" type="Label" compress="0" pack="0" quality="80" props="sizeGrid=3,5,10,2" picType="0" scale="0"/>
+   <item name="window/progress.png" type="ProgressBar" compress="0" pack="0" quality="80" props="sizeGrid=3,30,2,7" picType="0" scale="0"/>
+   <item name="window/coin.png" type="Image" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="gameworld/boss_hp.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=10,0,11,0" picType="0" scale="0"/>
+   <item name="gameworld/mob_hp.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=5,6,5,5" picType="0" scale="0"/>
+   <item name="ui/ui_cover_bg.png" type="Image" compress="0" pack="2" quality="80" props="" picType="0" scale="0"/>
+</res>

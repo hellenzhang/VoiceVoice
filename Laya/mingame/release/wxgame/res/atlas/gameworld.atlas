@@ -1,0 +1,229 @@
+{
+    "frames": {
+        "boss_bullet.png": {
+            "frame": {
+                "h": 48,
+                "idx": 0,
+                "w": 42,
+                "x": 129,
+                "y": 200
+            },
+            "sourceSize": {
+                "h": 48,
+                "w": 42
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "btn_share.png": {
+            "frame": {
+                "h": 53,
+                "idx": 0,
+                "w": 55,
+                "x": 210,
+                "y": 197
+            },
+            "sourceSize": {
+                "h": 53,
+                "w": 55
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "dust.png": {
+            "frame": {
+                "h": 48,
+                "idx": 0,
+                "w": 42,
+                "x": 266,
+                "y": 197
+            },
+            "sourceSize": {
+                "h": 48,
+                "w": 42
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "dust_02.png": {
+            "frame": {
+                "h": 42,
+                "idx": 0,
+                "w": 44,
+                "x": 308,
+                "y": 65
+            },
+            "sourceSize": {
+                "h": 42,
+                "w": 44
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "mob_body.png": {
+            "frame": {
+                "h": 118,
+                "idx": 0,
+                "w": 120,
+                "x": 129,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 118,
+                "w": 120
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "mob_hpbar_bar.png": {
+            "frame": {
+                "h": 16,
+                "idx": 0,
+                "w": 64,
+                "x": 277,
+                "y": 166
+            },
+            "sourceSize": {
+                "h": 16,
+                "w": 64
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "mob_hpbar_bg.png": {
+            "frame": {
+                "h": 16,
+                "idx": 0,
+                "w": 64,
+                "x": 308,
+                "y": 108
+            },
+            "sourceSize": {
+                "h": 16,
+                "w": 64
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "mob_tail0.png": {
+            "frame": {
+                "h": 77,
+                "idx": 0,
+                "w": 66,
+                "x": 210,
+                "y": 119
+            },
+            "sourceSize": {
+                "h": 77,
+                "w": 66
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "mob_tail1.png": {
+            "frame": {
+                "h": 100,
+                "idx": 0,
+                "w": 30,
+                "x": 277,
+                "y": 65
+            },
+            "sourceSize": {
+                "h": 100,
+                "w": 30
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "par.png": {
+            "frame": {
+                "h": 19,
+                "idx": 0,
+                "w": 19,
+                "x": 250,
+                "y": 65
+            },
+            "sourceSize": {
+                "h": 19,
+                "w": 19
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "share_btn_bg.png": {
+            "frame": {
+                "h": 64,
+                "idx": 0,
+                "w": 64,
+                "x": 250,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 64,
+                "w": 64
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "ui_btn_pause.png": {
+            "frame": {
+                "h": 80,
+                "idx": 0,
+                "w": 80,
+                "x": 129,
+                "y": 119
+            },
+            "sourceSize": {
+                "h": 80,
+                "w": 80
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "ui_btn_resume.png": {
+            "frame": {
+                "h": 243,
+                "idx": 0,
+                "w": 128,
+                "x": 0,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 243,
+                "w": 128
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    },
+    "meta": {
+        "image": "gameworld.png",
+        "prefix": "gameworld/"
+    }
+}

@@ -1,0 +1,16 @@
+{
+"TestString": "test_string",
+"TestTable": {
+"TestMember1": "test_member1"
+},
+"TestList": [
+{
+"Key": 1,
+"Val": "a"
+},
+{
+"Key": 2,
+"Val": "b"
+}
+]
+}

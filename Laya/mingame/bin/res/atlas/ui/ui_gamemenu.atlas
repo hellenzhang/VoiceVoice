@@ -1,0 +1,212 @@
+{
+    "frames": {
+        "btn_no.png": {
+            "frame": {
+                "h": 52,
+                "idx": 0,
+                "w": 76,
+                "x": 165,
+                "y": 79
+            },
+            "sourceSize": {
+                "h": 52,
+                "w": 76
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "btn_ok.png": {
+            "frame": {
+                "h": 52,
+                "idx": 0,
+                "w": 76,
+                "x": 242,
+                "y": 79
+            },
+            "sourceSize": {
+                "h": 52,
+                "w": 76
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "btn_rank.png": {
+            "frame": {
+                "h": 52,
+                "idx": 0,
+                "w": 112,
+                "x": 149,
+                "y": 137
+            },
+            "sourceSize": {
+                "h": 52,
+                "w": 112
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "btn_revive.png": {
+            "frame": {
+                "h": 52,
+                "idx": 0,
+                "w": 76,
+                "x": 262,
+                "y": 132
+            },
+            "sourceSize": {
+                "h": 52,
+                "w": 76
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "btn_startplay.png": {
+            "frame": {
+                "h": 52,
+                "idx": 0,
+                "w": 148,
+                "x": 0,
+                "y": 137
+            },
+            "sourceSize": {
+                "h": 52,
+                "w": 148
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_gameover.png": {
+            "frame": {
+                "h": 57,
+                "idx": 0,
+                "w": 164,
+                "x": 0,
+                "y": 79
+            },
+            "sourceSize": {
+                "h": 57,
+                "w": 164
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_hero.png": {
+            "frame": {
+                "h": 36,
+                "idx": 0,
+                "w": 135,
+                "x": 240,
+                "y": 190
+            },
+            "sourceSize": {
+                "h": 36,
+                "w": 135
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_kefu.png": {
+            "frame": {
+                "h": 51,
+                "idx": 0,
+                "w": 64,
+                "x": 319,
+                "y": 79
+            },
+            "sourceSize": {
+                "h": 51,
+                "w": 64
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_relive.png": {
+            "frame": {
+                "h": 36,
+                "idx": 0,
+                "w": 124,
+                "x": 0,
+                "y": 219
+            },
+            "sourceSize": {
+                "h": 36,
+                "w": 124
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_share.png": {
+            "frame": {
+                "h": 46,
+                "idx": 0,
+                "w": 64,
+                "x": 339,
+                "y": 131
+            },
+            "sourceSize": {
+                "h": 46,
+                "w": 64
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_shoucang.png": {
+            "frame": {
+                "h": 28,
+                "idx": 0,
+                "w": 239,
+                "x": 0,
+                "y": 190
+            },
+            "sourceSize": {
+                "h": 28,
+                "w": 239
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_title.png": {
+            "frame": {
+                "h": 78,
+                "idx": 0,
+                "w": 415,
+                "x": 0,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 78,
+                "w": 415
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    },
+    "meta": {
+        "image": "ui_gamemenu.png",
+        "prefix": "ui/ui_gamemenu/"
+    }
+}

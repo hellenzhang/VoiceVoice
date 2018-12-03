@@ -1,0 +1,42 @@
+{
+    "frames": {
+        "btn_invite.png": {
+            "frame": {
+                "h": 52,
+                "idx": 0,
+                "w": 256,
+                "x": 0,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 52,
+                "w": 256
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "img_rankpage_title.png": {
+            "frame": {
+                "h": 57,
+                "idx": 0,
+                "w": 130,
+                "x": 0,
+                "y": 53
+            },
+            "sourceSize": {
+                "h": 57,
+                "w": 130
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    },
+    "meta": {
+        "image": "ui_gamerank.png",
+        "prefix": "ui/ui_gamerank/"
+    }
+}

@@ -2,37 +2,63 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using LitJson;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 
 public class Export : Editor {
+    [MenuItem("Export/TTMapJson")]
+    public static void test()
+    {
+        string hh = "TT456464846468486,TT45,";
+        Debug.LogError(Regex.Unescape("sdasad\u7389\u54E5\u54E5\u5E05\u7389\u54E5\u54E5\u5E05"));
+    }
+  
     [MenuItem("Export/MapJson")]
     public static void SaveJson()
     {
         string testJsonFilePath = "E:/Engine/H5/client/VoiceVoice/Laya/mingame/bin/res/meta/all_map.json";
+        if (File.Exists(testJsonFilePath))
+        {
+            File.Delete(testJsonFilePath);
+        }
         //找到当前路径
         FileInfo file = new FileInfo(testJsonFilePath);
+       
         //判断有没有文件，有则打开文件，，没有创建后打开文件
         StreamWriter sw = file.CreateText();
         //获取数据
         //ToJson接口将你的列表类传进去，，并自动转换为string类型
-        string json = JsonMapper.ToJson(GetMapData());
-        //将转换好的字符串存进文件，
+        MapData t_mapData = GetMapData();
+        string json = JsonMapper.ToJson(t_mapData);
+       // string  t_json= Regex.Unescape(json);
+        ////由于存在Json中文存储乱码的问题，这里要把他替换掉
+        //string[] t_jsonArry = json.Split(',');
+        //string t_head = "\"m_text\":";
+        //for (int i = 0; i < t_jsonArry.Length; i++)
+        //{
+        //    if (t_jsonArry[i].StartsWith(t_head))
+        //    {
+        //        string t_mid=GetValue(t_jsonArry[i], t_head+"\"","\"");
+        //        string t_china= Regex.Unescape(t_mid);
+        //    }
+        //}
         sw.WriteLine(json);
         //注意释放资源
         sw.Close();
         sw.Dispose();
 
-        //替换
 
     }
-    static string m_textKeyHead="m_textKeyHead";
-    private static int m_textKeyIndex = 0;
+    public static string GetValue(string str, string s, string e)
+    {
+        Regex rg = new Regex("(?<=(" + s + "))[.\\s\\S]*?(?=(" + e + "))", RegexOptions.Multiline | RegexOptions.Singleline);
+        return rg.Match(str).Value;
+    }
     static MapData GetMapData()
     {
-        m_textKeyIndex = 0;
         MapData t_data=new MapData();
       
         OneScene t_scene=new OneScene();
@@ -46,7 +72,6 @@ public class Export : Editor {
         Transform[] t_allFloorArry = t_floor.GetComponentsInChildren<Transform>();
         for (int i = 0; i < t_allFloorArry.Length; i++)
         {
-            m_textKeyIndex++;
             RectTransform t_rectTrans= t_allFloorArry[i] as RectTransform;
             if (t_rectTrans.name.Contains("Data_floor"))
             {
@@ -59,17 +84,7 @@ public class Export : Editor {
                 t_ground.m_width = Math.Round(t_rectTrans.rect.width, 0);
                 t_ground.m_height = Math.Round(t_rectTrans.rect.height, 0);
                 //查找文本--
-                Text t_text = t_rectTrans.gameObject.GetComponentInChildren<Text>();
-                if (t_text != null)
-                {
-                    t_ground.m_text = t_text.text;
-                    t_ground.m_textKey = m_textKeyHead+ m_textKeyIndex;
-                    t_ground.m_fontSize = t_text.fontSize;
-                    t_ground.m_textColor = "#" + ColorUtility.ToHtmlStringRGB(t_text.color);
-                    t_ground.m_upLength = Math.Round(t_text.rectTransform.localPosition.x, 0);
-                    t_ground.m_leftLength = Math.Round(t_text.rectTransform.localPosition.y, 0);
-                }
-
+                GetTextData(t_rectTrans,t_ground);
                 t_scene.arry.Add(t_ground);
             }
         }
@@ -89,17 +104,7 @@ public class Export : Editor {
                 t_ground.m_posy = Math.Round(-t_rectTrans.localPosition.y, 0);
                 t_ground.m_width = Math.Round(t_rectTrans.rect.width, 0);
                 t_ground.m_height = Math.Round(t_rectTrans.rect.height, 0);
-                Text t_text = t_rectTrans.gameObject.GetComponentInChildren<Text>();
-                if (t_text!=null)
-                {
-                    t_ground.m_text = t_text.text;
-                    t_ground.m_textKey = m_textKeyHead + m_textKeyIndex;
-                    t_ground.m_fontSize = t_text.fontSize;
-                    t_ground.m_textColor = "#" + ColorUtility.ToHtmlStringRGB(t_text.color);
-                    t_ground.m_upLength = Math.Round(t_text.rectTransform.localPosition.x, 0);
-                    t_ground.m_leftLength = Math.Round(t_text.rectTransform.localPosition.y, 0);
-                }
-              
+                GetTextData(t_rectTrans, t_ground);
                 t_scene.arry.Add(t_ground);
             }
         }
@@ -119,19 +124,30 @@ public class Export : Editor {
                 t_ground.m_posy = Math.Round(-t_rectTrans.localPosition.y, 0);
                 t_ground.m_width = Math.Round(t_rectTrans.rect.width, 0);
                 t_ground.m_height = Math.Round(t_rectTrans.rect.height, 0);
-                Text t_text = t_rectTrans.gameObject.GetComponentInChildren<Text>();
-                if (t_text != null)
-                {
-                    t_ground.m_text = t_text.text;
-                    t_ground.m_textKey = m_textKeyHead + m_textKeyIndex;
-                    t_ground.m_fontSize = t_text.fontSize;
-                    t_ground.m_textColor = "#" + ColorUtility.ToHtmlStringRGB(t_text.color);
-                    t_ground.m_upLength = Math.Round(t_text.rectTransform.localPosition.x, 0);
-                    t_ground.m_leftLength = Math.Round(t_text.rectTransform.localPosition.y, 0);
-                }
+                GetTextData(t_rectTrans, t_ground);
                 t_scene.arry.Add(t_ground);
             }
         }
         return t_data;
+    }
+
+    static void GetTextData(Transform p_parent, OneGround p_ground)
+    {
+        Text[] t_textArry = p_parent.gameObject.GetComponentsInChildren<Text>();
+        if (t_textArry != null)
+        {
+            for (int j = 0; j < t_textArry.Length; j++)
+            {
+                Text t_text = t_textArry[j];
+                TextData t_td = new TextData();
+                t_td.m_text = t_text.text;
+                t_td.m_fontSize = t_text.fontSize;
+                t_td.m_textColor = "#" + ColorUtility.ToHtmlStringRGB(t_text.color);
+                t_td.m_leftLength = Math.Round(t_text.rectTransform.anchoredPosition.x, 0);
+                t_td.m_upLength = Math.Round(t_text.rectTransform.anchoredPosition.y, 0);              
+                p_ground.m_textArry.Add(t_td);
+            }
+
+        }
     }
 }

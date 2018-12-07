@@ -6,7 +6,7 @@ var SceneData = /** @class */ (function () {
         for (var index = 0; index < p_data["arry"].length; index++) {
             var element = p_data["arry"][index];
             var t_tempdata = new OnePieceData();
-            t_tempdata.Init(element.m_id, element.m_groundPath, element.m_posx, element.m_posy, element.m_width, element.m_height, element.groundType);
+            t_tempdata.Init(element.m_id, element.m_groundPath, element.m_posx, element.m_posy, element.m_width, element.m_height, element.groundType, element["m_textArry"]);
             this.m_groundArry.push(t_tempdata);
         }
         // this.m_groundArry=new Array<OnePieceData>();

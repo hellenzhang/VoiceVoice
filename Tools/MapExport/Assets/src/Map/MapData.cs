@@ -23,10 +23,13 @@ public class OneGround
     public double m_width;
     public double m_height;
     public int groundType;
+    public List<TextData> m_textArry = new List<TextData>();
+}
+
+public class TextData
+{
     //字体内容
     public string m_text;
-    //字体内容
-    public string m_textKey;
     //字体颜色
     public string m_textColor;
     //字体

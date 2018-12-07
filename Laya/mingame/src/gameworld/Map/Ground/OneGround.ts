@@ -7,7 +7,7 @@ class OneGournd extends Laya.Sprite {
     private m_isRomove = false;
 
     private m_container: Laya.Sprite;
-    private m_text = new Laya.Text;
+    private m_textArry:Array< Laya.Text> = new Array< Laya.Text>();
 
     private m_image: Laya.Sprite;
     //未加载时，临时记录的变量
@@ -22,7 +22,7 @@ class OneGournd extends Laya.Sprite {
         this.m_tempPosx = this.m_data.m_posx;
         this.m_tempPosy = this.m_data.m_posy;
           // [name,type,box_rect,layout_x,layout_y,x,y,bgImg9Url,W,H,9gridSize,fgUrl,rightOffestX]
-       var uiInfoArr: Array<Array<any>> = [["0 start", "img9", 0, 0, 540, 960, "c", 0, "t", 520,this.m_data.m_groundPath, this.m_data.m_width, this.m_data.m_height, 20]];
+       var uiInfoArr: Array<Array<any>> = [["0 start", "img9", 0, 0, 540, 960, "c", 0, "t", 520,this.m_data.m_groundPath, this.m_data.m_width, this.m_data.m_height, 16]];
        var sprArr = UIMaker.MakeUI(uiInfoArr, this);
        this.m_isLoaded=true;
        this.m_image=sprArr[0];
@@ -33,8 +33,17 @@ class OneGournd extends Laya.Sprite {
                  this.m_image.pivotY = this.m_data.m_height;
                    // this.pivotX = 0;
                   //  this.pivotY = this.m_data.m_height;
-                     this.m_text.text=this.m_data.m_text;
-                    this.m_text.pos(this.m_data.m_posx+20,this.m_data.m_posy-this.m_data.m_height+20);
+                   for (var index = 0; index < this.m_data.m_textArry.length; index++) {
+                       var element = this.m_data.m_textArry[index];
+                        var t_text=new Laya.Text;
+                        t_text.text=element.m_text;
+                        t_text.color=element.m_textColor;
+                        t_text.fontSize=element.m_fontSize;
+                        t_text.pos(this.m_data.m_posx+element.m_leftLength,this.m_data.m_posy-element.m_upLength-this.m_data.m_height);
+                        this.m_textArry.push(t_text);
+                   }
+                   
+
                     break;
                 case GroundTypeEnum.Roof:
                     this.m_image.pivotX = 0;
@@ -49,46 +58,7 @@ class OneGournd extends Laya.Sprite {
                     break;
             }
            this.m_image.pos(this.m_data.m_posx, this.m_data.m_posy);
-
-           
            this.addChild(this.m_image);
-            this.m_text.color="#ff0000";
-            this.m_text.fontSize=50;         
-            
-
-      //  console.log(this.m_data.m_posx+"   "+this.m_data.m_posy+"  "+this.m_data.m_groundType);
-        // this.m_image=this.loadImage(this.m_data.m_groundPath, this.m_data.m_posx, this.m_data.m_posy, this.m_data.m_width, this.m_data.m_height, Laya.Handler.create(this, () => {
-        //     this.m_isLoaded = true;
-        //     switch (this.m_data.m_groundType) {
-        //         case GroundTypeEnum.Floor:
-        //             this.pivotX = 0;
-        //             this.pivotY = this.m_data.m_height;
-        //              this.m_text.text=this.m_data.m_text;
-        //             this.m_text.pos(this.m_data.m_posx,this.m_data.m_posy);
-        //             break;
-        //         case GroundTypeEnum.Roof:
-        //             // console.log("KKKKKKKKKKKKKKKKKKKKKKKK");
-        //             this.pivotX = 0;
-        //             this.pivotY = 0;
-        //             break;
-        //         case GroundTypeEnum.FireStone:
-        //             // console.log("KKKKKKKKKKKKKKKKKKKKKKKK");
-        //             this.pivotX = 0;
-        //             this.pivotY = 0;
-        //             break;
-        //         default:
-        //             break;
-        //     }
-
-
-           
-        //    this.addChild(this.m_image);
-        //     this.m_text.color="#ff0000";
-        //     this.m_text.fontSize=50;
-         
-        //     this.addChild(this.m_text);
-           
-        // }));
 
         this.m_container.addChild(this);
         this.visible = false;
@@ -118,7 +88,12 @@ class OneGournd extends Laya.Sprite {
             return false;
         }
         if (!this.visible) {
-            this.addChild(this.m_text);
+            for (var index = 0; index < this.m_textArry.length; index++) {
+                var element = this.m_textArry[index];
+                console.log(element.text);
+                 this.addChild(element);
+            }
+           
         }
         this.visible = true;
         return true;

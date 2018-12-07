@@ -11,10 +11,6 @@ var Item = {
             //当前坐标的x值，小于0和自己宽度就会被干掉哦
             m_currentX:p_currentx,
             m_source:p_source,
-            //边框
-            m_borderImage:null,
-            //脚丫子的图片
-            m_footImage:null,
             //当前的图片信息
             m_image:null,
             //是否加载完成
@@ -59,7 +55,7 @@ var Item = {
             if (t_temp.m_currentX<=t_temp.m_pageLength+t_temp.m_hight&&t_temp.m_currentX>=-t_temp.m_width) {
                 if (t_temp.m_isLoad) {
                     t_temp.ctx.drawImage(t_temp.m_image, t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
-                  t_temp.ctx.drawImage(t_temp.m_source[1], t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
+                     t_temp.ctx.drawImage(t_temp.m_source[1], t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
                     t_temp.ctx.font = "18px Impact";
                     t_temp.ctx.textAlign = "left";
                     t_temp.ctx.fillStyle = "#ffffff";
@@ -67,7 +63,7 @@ var Item = {
                     if (t_temp.m_currentX < t_temp.m_pageLength / 2)
                     {
                        //可以踩了
-                      t_temp.ctx.drawImage(t_temp.m_source[0], t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
+                        t_temp.ctx.drawImage(t_temp.m_source[0], t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
                     }
                 }               
             }

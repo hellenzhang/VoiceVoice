@@ -22781,6 +22781,7 @@ if (typeof define === 'function' && define.amd){
 //-资源加载的地址,meta和image
 var RES_URL_ARR = [
     "res/block0.png",
+    "res/block1.png",
     "res/bg00.png",
     //-meta
     "res/meta/plane_meta.json",
@@ -23395,7 +23396,7 @@ var SceneData = /** @class */ (function () {
         for (var index = 0; index < p_data["arry"].length; index++) {
             var element = p_data["arry"][index];
             var t_tempdata = new OnePieceData();
-            t_tempdata.Init(element.m_id, element.m_groundPath, element.m_posx, element.m_posy, element.m_width, element.m_height, element.groundType);
+            t_tempdata.Init(element.m_id, element.m_groundPath, element.m_posx, element.m_posy, element.m_width, element.m_height, element.groundType, element["m_textArry"]);
             this.m_groundArry.push(t_tempdata);
         }
         // this.m_groundArry=new Array<OnePieceData>();
@@ -23423,11 +23424,13 @@ var SceneData = /** @class */ (function () {
 //# sourceMappingURL=SceneData.js.map
 var OnePieceData = /** @class */ (function () {
     function OnePieceData() {
+        this.m_text = "\u7389\u54E5\u54E5\u5E05\u7389\u54E5\u54E5\u5E05";
+        this.m_textArry = new Array();
     }
     /**
      * 地形初始化
      */
-    OnePieceData.prototype.Init = function (t_id, t_groundPath, t_posx, t_posy, t_width, t_height, t_groundType) {
+    OnePieceData.prototype.Init = function (t_id, t_groundPath, t_posx, t_posy, t_width, t_height, t_groundType, t_textArry) {
         // console.log("$$$$$$$$$$:"+t_id,t_groundPath,t_posx,t_posy,t_width,t_height);
         this.m_id = t_id;
         this.m_groundPath = t_groundPath;
@@ -23436,8 +23439,23 @@ var OnePieceData = /** @class */ (function () {
         this.m_width = t_width;
         this.m_height = t_height;
         this.m_groundType = t_groundType;
+        for (var index = 0; index < t_textArry.length; index++) {
+            var element = t_textArry[index];
+            var t_gtd = new GroundTextData(element.m_text, element.m_textColor, element.m_fontSize, element.m_upLength, element.m_leftLength);
+            this.m_textArry.push(t_gtd);
+        }
     };
     return OnePieceData;
+}());
+var GroundTextData = /** @class */ (function () {
+    function GroundTextData(p_text, p_textColor, p_fontSize, p_upLength, p_leftLength) {
+        this.m_text = p_text;
+        this.m_textColor = p_textColor;
+        this.m_fontSize = p_fontSize;
+        this.m_upLength = p_upLength;
+        this.m_leftLength = p_leftLength;
+    }
+    return GroundTextData;
 }());
 var GroundTypeEnum;
 (function (GroundTypeEnum) {
@@ -26738,10 +26756,10 @@ var Hero = /** @class */ (function (_super) {
     };
     //private touchStartH
     Hero.prototype.OnMouseDown = function () {
-        //  GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        GameWorld.inst.m_gameInput.GetAudioResult(4000);
     };
     Hero.prototype.OnMouseUp = function () {
-        //  GameWorld.inst.m_gameInput.GetAudioResult(400);
+        GameWorld.inst.m_gameInput.GetAudioResult(400);
         console.log("OnMouseUp");
     };
     return Hero;
@@ -26909,40 +26927,55 @@ var OneGournd = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.m_isLoaded = false;
         _this.m_isRomove = false;
+        _this.m_textArry = new Array();
         //未加载时，临时记录的变量
         _this.m_tempPosx = 0;
         _this.m_tempPosy = 0;
         return _this;
     }
     OneGournd.prototype.StartUp = function (p_data, p_container) {
-        var _this = this;
         this.m_container = p_container;
         this.m_data = p_data;
         this.m_tempPosx = this.m_data.m_posx;
         this.m_tempPosy = this.m_data.m_posy;
-        //  console.log(this.m_data.m_posx+"   "+this.m_data.m_posy+"  "+this.m_data.m_groundType);
-        this.loadImage(this.m_data.m_groundPath, this.m_data.m_posx, this.m_data.m_posy, this.m_data.m_width, this.m_data.m_height, Laya.Handler.create(this, function () {
-            _this.m_isLoaded = true;
-            switch (_this.m_data.m_groundType) {
-                case GroundTypeEnum.Floor:
-                    _this.pivotX = 0;
-                    _this.pivotY = _this.m_data.m_height;
-                    break;
-                case GroundTypeEnum.Roof:
-                    // console.log("KKKKKKKKKKKKKKKKKKKKKKKK");
-                    _this.pivotX = 0;
-                    _this.pivotY = 0;
-                    break;
-                case GroundTypeEnum.FireStone:
-                    // console.log("KKKKKKKKKKKKKKKKKKKKKKKK");
-                    _this.pivotX = 0;
-                    _this.pivotY = 0;
-                    break;
-                default:
-                    break;
-            }
-            _this.m_container.addChild(_this);
-        }));
+        // [name,type,box_rect,layout_x,layout_y,x,y,bgImg9Url,W,H,9gridSize,fgUrl,rightOffestX]
+        var uiInfoArr = [["0 start", "img9", 0, 0, 540, 960, "c", 0, "t", 520, this.m_data.m_groundPath, this.m_data.m_width, this.m_data.m_height, 16]];
+        var sprArr = UIMaker.MakeUI(uiInfoArr, this);
+        this.m_isLoaded = true;
+        this.m_image = sprArr[0];
+        switch (this.m_data.m_groundType) {
+            case GroundTypeEnum.Floor:
+                this.m_image.pivotX = 0;
+                this.m_image.pivotY = this.m_data.m_height;
+                // this.pivotX = 0;
+                //  this.pivotY = this.m_data.m_height;
+                for (var index = 0; index < this.m_data.m_textArry.length; index++) {
+                    var element = this.m_data.m_textArry[index];
+                    var t_text = new Laya.Text;
+                    t_text.text = element.m_text;
+                    t_text.color = element.m_textColor;
+                    t_text.fontSize = element.m_fontSize;
+                    t_text.pos(this.m_data.m_posx + element.m_leftLength, this.m_data.m_posy - element.m_upLength - this.m_data.m_height);
+                    this.m_textArry.push(t_text);
+                }
+                break;
+            case GroundTypeEnum.Roof:
+                this.m_image.pivotX = 0;
+                this.m_image.pivotY = 0;
+                break;
+            case GroundTypeEnum.FireStone:
+                // console.log("KKKKKKKKKKKKKKKKKKKKKKKK");
+                this.m_image.pivotX = 0;
+                this.m_image.pivotY = 0;
+                break;
+            default:
+                break;
+        }
+        this.m_image.pos(this.m_data.m_posx, this.m_data.m_posy);
+        this.addChild(this.m_image);
+        this.m_container.addChild(this);
+        this.visible = false;
+        this.isShow();
     };
     OneGournd.prototype.Reset = function () {
         // console.log("=====:"+this.x,this.m_tempPosx,this.m_data.m_posx);
@@ -26953,8 +26986,9 @@ var OneGournd = /** @class */ (function (_super) {
         //this.x=this.m_tempPosx;
         //this.y= this.m_tempPosy;
         //console.log("**********:"+this.x);
-        this.visible = true;
+        this.visible = false;
         this.m_isRomove = false;
+        this.isShow();
         //   Laya.DebugPanel.init();
     };
     //是否应该被显示
@@ -26963,6 +26997,13 @@ var OneGournd = /** @class */ (function (_super) {
         if (this.m_tempPosx - this.pivotX > Laya.stage.width) {
             this.visible = false;
             return false;
+        }
+        if (!this.visible) {
+            for (var index = 0; index < this.m_textArry.length; index++) {
+                var element = this.m_textArry[index];
+                console.log(element.text);
+                this.addChild(element);
+            }
         }
         this.visible = true;
         return true;
@@ -27025,13 +27066,14 @@ var OneGournd = /** @class */ (function (_super) {
         return false;
     };
     OneGournd.prototype.UpdateMove = function (p_movex, p_movey) {
-        //  console.log("======:"+p_movex+"  "+this.m_isRomove+"  "+this.m_isLoaded+"   "+this.m_data.m_id);
+        // console.log("======:"+p_movex+"  "+this.m_image.x+"  "+this.m_image.y+"   "+this.m_data.m_id);
         if (this.m_isRomove) {
             return;
         }
         if (this.m_isLoaded) {
             this.x -= p_movex;
             this.m_tempPosx -= p_movex;
+            //  this.m_text.x-=p_movex;
             this.isShow();
         }
         else {
@@ -27052,6 +27094,7 @@ var OneGournd = /** @class */ (function (_super) {
         }
         if (this.m_tempPosx + this.m_data.m_width - this.pivotX < 0) {
             //   console.log("----:"+this.x+"   "+this.m_data.m_width+"  "+this.m_data.m_id);
+            this.removeChild(this.m_text);
             this.visible = false;
             this.m_isRomove = true;
         }

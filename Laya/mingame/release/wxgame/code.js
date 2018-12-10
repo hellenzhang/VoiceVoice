@@ -23488,6 +23488,7 @@ var GameWorld = /** @class */ (function () {
         this.isRunning = false;
         //--Time,Input
         this.deltaTimeSec = 0;
+        this.m_gameIsOver = false;
     }
     Object.defineProperty(GameWorld, "inst", {
         get: function () {
@@ -23577,6 +23578,7 @@ var GameWorld = /** @class */ (function () {
         this.heroLayer.visible = true;
         this.isRunning = true;
         this.rootLayer.visible = true;
+        this.m_gameIsOver = false;
         this.hero.isActive = true;
         GameData.inst.isHeroDie = false;
     };
@@ -23594,14 +23596,18 @@ var GameWorld = /** @class */ (function () {
      */
     GameWorld.prototype.OnResume = function () {
         if (this.m_gameInput != null) {
-            //1.输入暂停--输入暂停就会是
-            this.m_gameInput.Resume();
+            //如果处于游戏结束阶段就不用处理了
+            if (!this.m_gameIsOver) {
+                //1.输入暂停--输入暂停就会是
+                this.m_gameInput.Resume();
+            }
         }
     };
     /**
      * 游戏结束
      */
     GameWorld.prototype.GameOver = function () {
+        this.m_gameIsOver = true;
         GameWorld.inst.smokesMgr.ShowHeroSmokeBlast();
         GameWorld.inst.frogSparksMgr.ShowHeroFrogBlast();
         GameWorld.inst.hero.Die();
@@ -23612,6 +23618,7 @@ var GameWorld = /** @class */ (function () {
     };
     //退出
     GameWorld.prototype.GameExit = function () {
+        this.m_gameIsOver = false;
         //切换页面
         GamePagesManager.inst.SwitchPage(GameMenuPage.ID, null);
         GameWorld.inst.m_gameInput.Stop();
@@ -24044,8 +24051,8 @@ var GamePlayHudPanel = /** @class */ (function () {
         // highCardFg.pivotX = 0;
         // highCardFg.pivotY = 0;
         // this.sprArr[0].addChild(highCardFg);
-        this.targetSC = new WXSCSprite(Laya.stage.width, 120);
-        this.targetSC.y = Laya.stage.height - 120;
+        this.targetSC = new WXSCSprite(Laya.stage.width, 55);
+        this.targetSC.y = Laya.stage.height - 55;
         ; //Laya.stage.height-120;
         this.sprArr[0].addChild(this.targetSC);
     };
@@ -26757,10 +26764,10 @@ var Hero = /** @class */ (function (_super) {
     };
     //private touchStartH
     Hero.prototype.OnMouseDown = function () {
-        GameWorld.inst.m_gameInput.GetAudioResult(4000);
+          GameWorld.inst.m_gameInput.GetAudioResult(4000);
     };
     Hero.prototype.OnMouseUp = function () {
-        GameWorld.inst.m_gameInput.GetAudioResult(400);
+           GameWorld.inst.m_gameInput.GetAudioResult(400);
         console.log("OnMouseUp");
     };
     return Hero;
@@ -27002,7 +27009,6 @@ var OneGournd = /** @class */ (function (_super) {
         if (!this.visible) {
             for (var index = 0; index < this.m_textArry.length; index++) {
                 var element = this.m_textArry[index];
-                console.log(element.text);
                 this.addChild(element);
             }
         }
@@ -27095,7 +27101,10 @@ var OneGournd = /** @class */ (function (_super) {
         }
         if (this.m_tempPosx + this.m_data.m_width - this.pivotX < 0) {
             //   console.log("----:"+this.x+"   "+this.m_data.m_width+"  "+this.m_data.m_id);
-            this.removeChild(this.m_text);
+            for (var index = 0; index < this.m_textArry.length; index++) {
+                var element = this.m_textArry[index];
+                this.removeChild(element);
+            }
             this.visible = false;
             this.m_isRomove = true;
         }

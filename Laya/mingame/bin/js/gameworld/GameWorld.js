@@ -18,6 +18,7 @@ var GameWorld = /** @class */ (function () {
         this.isRunning = false;
         //--Time,Input
         this.deltaTimeSec = 0;
+        this.m_gameIsOver = false;
     }
     Object.defineProperty(GameWorld, "inst", {
         get: function () {
@@ -107,6 +108,7 @@ var GameWorld = /** @class */ (function () {
         this.heroLayer.visible = true;
         this.isRunning = true;
         this.rootLayer.visible = true;
+        this.m_gameIsOver = false;
         this.hero.isActive = true;
         GameData.inst.isHeroDie = false;
     };
@@ -124,14 +126,18 @@ var GameWorld = /** @class */ (function () {
      */
     GameWorld.prototype.OnResume = function () {
         if (this.m_gameInput != null) {
-            //1.输入暂停--输入暂停就会是
-            this.m_gameInput.Resume();
+            //如果处于游戏结束阶段就不用处理了
+            if (!this.m_gameIsOver) {
+                //1.输入暂停--输入暂停就会是
+                this.m_gameInput.Resume();
+            }
         }
     };
     /**
      * 游戏结束
      */
     GameWorld.prototype.GameOver = function () {
+        this.m_gameIsOver = true;
         GameWorld.inst.smokesMgr.ShowHeroSmokeBlast();
         GameWorld.inst.frogSparksMgr.ShowHeroFrogBlast();
         GameWorld.inst.hero.Die();
@@ -142,6 +148,7 @@ var GameWorld = /** @class */ (function () {
     };
     //退出
     GameWorld.prototype.GameExit = function () {
+        this.m_gameIsOver = false;
         //切换页面
         GamePagesManager.inst.SwitchPage(GameMenuPage.ID, null);
         GameWorld.inst.m_gameInput.Stop();

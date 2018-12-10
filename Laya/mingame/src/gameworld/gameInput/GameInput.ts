@@ -61,6 +61,7 @@ class GameInput {
      * Resume
      */
     public Resume() {
+        
           WXPlatform.inst.RecorderResume();
           this.m_inputStateEnum=InputStateEnum.On;
     }

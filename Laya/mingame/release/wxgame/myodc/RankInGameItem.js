@@ -4,8 +4,8 @@ var Item = {
         var t_temp = {
             //存储的玩家数据--，{avatarUrl,nickname,openid,KVData{key:string,value:string}}
             m_playerInfo:p_playerInfo,
-            m_hight:70,
-            m_width:70,
+            m_hight:40,
+            m_width:40,
             //保留记录的原始的位置，复位后直接使用
             m_originX:p_currentx,
             //当前坐标的x值，小于0和自己宽度就会被干掉哦
@@ -54,16 +54,16 @@ var Item = {
             //1.判断时候该显示
             if (t_temp.m_currentX<=t_temp.m_pageLength+t_temp.m_hight&&t_temp.m_currentX>=-t_temp.m_width) {
                 if (t_temp.m_isLoad) {
-                    t_temp.ctx.drawImage(t_temp.m_image, t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
-                     t_temp.ctx.drawImage(t_temp.m_source[1], t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
-                    t_temp.ctx.font = "18px Impact";
+                    t_temp.ctx.drawImage(t_temp.m_image, t_temp.m_currentX, 0, t_temp.m_width, t_temp.m_hight);
+                     t_temp.ctx.drawImage(t_temp.m_source[1], t_temp.m_currentX, 0, t_temp.m_width, t_temp.m_hight);
+                    t_temp.ctx.font = "13px Impact";
                     t_temp.ctx.textAlign = "left";
-                    t_temp.ctx.fillStyle = "#ffffff";
-                    t_temp.ctx.fillText(t_temp.m_playerInfo.nickname, t_temp.m_currentX, t_temp.m_hight+ 30);                   
+                    t_temp.ctx.fillStyle = "#b87333";
+                    t_temp.ctx.fillText(t_temp.m_playerInfo.nickname, t_temp.m_currentX, t_temp.m_hight+ 10);                   
                     if (t_temp.m_currentX < t_temp.m_pageLength / 2)
                     {
-                       //可以踩了
-                        t_temp.ctx.drawImage(t_temp.m_source[0], t_temp.m_currentX, 10, t_temp.m_width, t_temp.m_hight);
+                       //可以踩了                  
+                        t_temp.ctx.drawImage(t_temp.m_source[0], t_temp.m_currentX, 0, t_temp.m_width, t_temp.m_hight);
                     }
                 }               
             }
@@ -74,10 +74,10 @@ var Item = {
             else if(t_temp.m_currentX<t_temp.m_pageLength/2)
             {
                 //可以踩了
-                t_temp.ctx.font = "18px Impact";
-                t_temp.ctx.textAlign = "center";
-                t_temp.ctx.fillStyle = "#ff0000";
-                t_temp.ctx.fillText("踩", t_temp.m_currentX, 10+t_temp.m_hight/2);
+                // t_temp.ctx.font = "18px Impact";
+                // t_temp.ctx.textAlign = "center";
+                // t_temp.ctx.fillStyle = "#ff0000";
+                // t_temp.ctx.fillText("踩", t_temp.m_currentX, 10+t_temp.m_hight/2);
             }
         }
         return t_temp;

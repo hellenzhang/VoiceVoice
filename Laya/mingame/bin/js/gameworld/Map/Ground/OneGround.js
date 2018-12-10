@@ -91,7 +91,6 @@ var OneGournd = /** @class */ (function (_super) {
         if (!this.visible) {
             for (var index = 0; index < this.m_textArry.length; index++) {
                 var element = this.m_textArry[index];
-                console.log(element.text);
                 this.addChild(element);
             }
         }
@@ -184,7 +183,10 @@ var OneGournd = /** @class */ (function (_super) {
         }
         if (this.m_tempPosx + this.m_data.m_width - this.pivotX < 0) {
             //   console.log("----:"+this.x+"   "+this.m_data.m_width+"  "+this.m_data.m_id);
-            this.removeChild(this.m_text);
+            for (var index = 0; index < this.m_textArry.length; index++) {
+                var element = this.m_textArry[index];
+                this.removeChild(element);
+            }
             this.visible = false;
             this.m_isRomove = true;
         }

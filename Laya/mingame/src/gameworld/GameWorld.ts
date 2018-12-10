@@ -167,11 +167,11 @@ class GameWorld {
         GameData.inst.StartGamePlay();
         //输入控制启动
         GameWorld.inst.m_gameInput.StartUp();
-        this.mapLayer.visible=true;
-        this.heroLayer.visible=true;
+        this.mapLayer.visible = true;
+        this.heroLayer.visible = true;
         this.isRunning = true;
         this.rootLayer.visible = true;
-
+        this.m_gameIsOver = false;
         this.hero.isActive = true;
         GameData.inst.isHeroDie = false;
     }
@@ -189,14 +189,20 @@ class GameWorld {
      */
     public OnResume() {
         if (this.m_gameInput != null) {
-            //1.输入暂停--输入暂停就会是
-            this.m_gameInput.Resume();
+            //如果处于游戏结束阶段就不用处理了
+            if (!this.m_gameIsOver) {
+                
+                  //1.输入暂停--输入暂停就会是
+              this.m_gameInput.Resume();
+            }
         }
     }
+    m_gameIsOver:boolean=false;
     /**
      * 游戏结束
      */
     public GameOver() {
+        this.m_gameIsOver=true;
         GameWorld.inst.smokesMgr.ShowHeroSmokeBlast();
         GameWorld.inst.frogSparksMgr.ShowHeroFrogBlast();
         GameWorld.inst.hero.Die();
@@ -206,7 +212,8 @@ class GameWorld {
         GameWorld.inst.m_gameInput.Stop();
     }
     //退出
-    public GameExit() {        
+    public GameExit() { 
+        this.m_gameIsOver=false;       
         //切换页面
         GamePagesManager.inst.SwitchPage(GameMenuPage.ID,null);
         GameWorld.inst.m_gameInput.Stop();

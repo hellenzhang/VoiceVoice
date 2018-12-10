@@ -72,8 +72,8 @@ class GamePlayHudPanel {
         // highCardFg.pivotY = 0;
         // this.sprArr[0].addChild(highCardFg);
 
-        this.targetSC = new WXSCSprite(Laya.stage.width, 120);
-        this.targetSC.y=Laya.stage.height-120;;//Laya.stage.height-120;
+        this.targetSC = new WXSCSprite(Laya.stage.width, 55);
+        this.targetSC.y=Laya.stage.height-55;;//Laya.stage.height-120;
         this.sprArr[0].addChild(this.targetSC);
 
     }

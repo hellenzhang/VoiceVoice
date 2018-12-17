@@ -22788,6 +22788,7 @@ var RES_URL_ARR = [
     "res/meta/plane_meta.json",
     "res/meta/all_map.json",
     "res/meta/audio_decode.json",
+    "res/meta/addSpeed.json",
     //-
     "res/atlas/gameworld.atlas",
     //-hero
@@ -23730,6 +23731,7 @@ var GameInput = /** @class */ (function () {
         Laya.stage.addChild(this.m_showRunPower);
         Laya.stage.addChild(this.m_showJumpPower);
         Laya.stage.addChild(this.m_showInputPower);
+        this.m_addSpeedInput = new AddSpeedInput();
     }
     //启动输入
     GameInput.prototype.StartUp = function () {
@@ -23895,7 +23897,21 @@ var GameInput = /** @class */ (function () {
         else if (this.m_decodeType == 2) {
             //发送
             if (this.m_managerHandler && this.m_currentDecodeData && this.m_inputStateEnum == InputStateEnum.On) {
-                this.m_managerHandler.call(this.that, this.m_currentDecodeData.m_runCoffe, this.m_currentDecodeData.m_jumpCoffe);
+                //获取x输入
+                var x_input = this.m_currentDecodeData.m_runCoffe + this.m_addSpeedInput.GetAddSpeed();
+                //增加能量--根据行走的距离乘以系数
+                GameData.inst.speedPower += this.m_addSpeedInput.m_addPowerRadio * x_input;
+                GameData.inst.speedPower = GameData.inst.speedPower > GameData.inst.maxPower ? GameData.inst.maxPower : GameData.inst.speedPower;
+                //减少能量
+                if (this.m_addSpeedInput.GetAddSpeed() > 0) {
+                    //减少能量                  
+                    GameData.inst.speedPower -= this.m_addSpeedInput.m_releasePowerRadio * x_input;
+                    GameData.inst.speedPower = GameData.inst.speedPower < 0 ? 0 : GameData.inst.speedPower;
+                    //检测是否可以继续
+                    this.m_addSpeedInput.CheckPowerOff();
+                }
+                this.m_addSpeedInput.Update();
+                this.m_managerHandler.call(this.that, x_input, this.m_currentDecodeData.m_jumpCoffe);
             }
         }
     };
@@ -23919,7 +23935,6 @@ var AudioDecodeData = /** @class */ (function () {
         this.m_runCoffe = 1;
         //跳跃系数
         this.m_jumpCoffe = 1;
-        console.log("@@@@:" + p_level, p_power, p_runCoffe, p_jumpCoffe);
         this.m_level = p_level;
         this.m_power = p_power;
         this.m_runCoffe = p_runCoffe;
@@ -23928,6 +23943,77 @@ var AudioDecodeData = /** @class */ (function () {
     return AudioDecodeData;
 }());
 //# sourceMappingURL=AudioDecodeData.js.map
+/**
+ * 加速输入处理
+ */
+var AddSpeedInput = /** @class */ (function () {
+    function AddSpeedInput() {
+        //当前的加速
+        this.m_currentAddSpeed = 0;
+        //是否按下加速按钮
+        this.m_isPress = false;
+        var t_temp = Laya.loader.getRes("res/meta/addSpeed.json");
+        this.m_speedArry = t_temp["speed"];
+        this.m_addPowerRadioArry = t_temp["addPower"];
+        this.m_releasePowerRadioArry = t_temp["releasePower"];
+        this.InitSpeedData();
+    }
+    //初始化速度信息
+    AddSpeedInput.prototype.InitSpeedData = function () {
+        this.m_addPowerRadio = this.m_addPowerRadioArry[GameData.inst.addPowerRadioIndex];
+        this.m_releasePowerRadio = this.m_releasePowerRadioArry[GameData.inst.releasePowerIndex];
+    };
+    /**
+     * GetAddSpeed
+   :number  */
+    AddSpeedInput.prototype.GetAddSpeed = function () {
+        return this.m_currentAddSpeed;
+    };
+    /**
+     * PressSpeedButton
+     */
+    AddSpeedInput.prototype.PressSpeedButton = function () {
+        this.m_isPress = true;
+        //如果能量大于0，那就能加速，
+        if (this.CheckCanAddSpeed()) {
+            //将来这个从存储数据
+            var t_speedLevel = 0;
+            this.m_currentAddSpeed = this.m_speedArry[t_speedLevel];
+        }
+    };
+    /**
+     * ReleaseSpeedButton
+     */
+    AddSpeedInput.prototype.ReleaseSpeedButton = function () {
+        this.m_isPress = false;
+        this.m_currentAddSpeed = 0;
+    };
+    /**
+     * PowerOff
+     */
+    AddSpeedInput.prototype.CheckPowerOff = function () {
+        if (GameData.inst.speedPower <= this.m_releasePowerRadio) {
+            this.m_currentAddSpeed = 0;
+        }
+    };
+    /**
+     * Update
+     */
+    AddSpeedInput.prototype.Update = function () {
+        //如果一直按着，那就测试是不是能量够了
+        if (this.m_isPress && this.m_currentAddSpeed == 0) {
+            this.PressSpeedButton();
+        }
+    };
+    AddSpeedInput.prototype.CheckCanAddSpeed = function () {
+        if (GameData.inst.speedPower >= GameData.inst.minAddSpeedPower) {
+            return true;
+        }
+        return false;
+    };
+    return AddSpeedInput;
+}());
+//# sourceMappingURL=AddSpeedInput.js.map
 /**
  * gamePlay的hud界面
  * 第一次10秒，以后30秒
@@ -24014,15 +24100,16 @@ var GamePlayHudPanel = /** @class */ (function () {
     function GamePlayHudPanel(gamePlay, rootLayer) {
         this.gamePlay = gamePlay;
         this.rootLayer = rootLayer;
+        //能量显示
+        this.m_energyShow = new Laya.Text();
         //- 0和5的偏移为了适配腾讯自己的bug
         this.uiInfoArr = [
             ["0 highCardLayer", "layer", 0, 0, 540, 120, "l", 0, "t", 0],
             ["1 coin_img", "img", 0, 0, 540, 120, "r", -10, "t", 90, "ui/ui_common/img_coin.png"],
             ["2 coin tf", "tf", 0, 0, 540, 120, 370, 90, 110, 40, "bf_24", "right"],
-            //  ["3 pauseBtn", "btn", 0, 0, 540, 120, "c", 0, "t", 10, "gameworld/ui_btn_pause.png"],
-            // ["5 shareBtn", "btn", 0, -10, 540, 80, "l", 10, "b", 0, "gameworld/btn_share.png"],
-            ["3 rank", "btn9", 0, -10, 540, 80, "l", 10, "t", 200, "gameworld/share_btn_bg.png", 80, 80, 20, "gameworld/btn_share.png"],
+            ["3 shareBtn", "btn9", 0, -10, 540, 80, "l", 10, "b", 0, "gameworld/share_btn_bg.png", 80, 80, 20, "gameworld/btn_share.png"],
             ["4 resumeBtn", "btn", 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
+            ["5 addSpeedBtn", "btn", 0, 500, 540, 80, "l", 10, "m", 0, "ui/ui_common/addSpeed.png", 80, 80, 20],
         ];
         this.targetST = new SafeTimer();
         //-
@@ -24032,9 +24119,9 @@ var GamePlayHudPanel = /** @class */ (function () {
     GamePlayHudPanel.prototype.InitUI = function () {
         //事件处理函数
         this.eventConfigArr = [
-            //   [3, this, this.OnClickPause],
-            [3, this, this.OnClickInvite],
             [4, this, this.OnClickResume],
+            [5, this, this.OnPressAddSpeed, Laya.Event.MOUSE_OVER],
+            [5, this, this.OnReleaseAddSpeed, Laya.Event.MOUSE_OUT],
         ];
         //生成ui
         this.sprArr = UIMaker.MakeUI(this.uiInfoArr, this.rootLayer);
@@ -24046,22 +24133,20 @@ var GamePlayHudPanel = /** @class */ (function () {
         //点击屏幕继续
         this.resumeBtn = this.sprArr[4];
         this.resumeBtn.visible = false;
-        //---------------高分处理
-        // let highCardFg = GameUtils.CreateSprite("res/ui_odc/img_high_card_fg.png", 1);
-        // highCardFg.pivotX = 0;
-        // highCardFg.pivotY = 0;
-        // this.sprArr[0].addChild(highCardFg);
         this.targetSC = new WXSCSprite(Laya.stage.width, 55);
         this.targetSC.y = Laya.stage.height - 55;
         ; //Laya.stage.height-120;
         this.sprArr[0].addChild(this.targetSC);
+        //绑定位置
+        this.sprArr[5].addChild(this.m_energyShow);
+        this.m_energyShow.pos(0, -30); //this.sprArr[5].height/2+10
+        this.m_energyShow.font = "bf_24";
+        this.m_energyShow.fontSize = 50;
     };
     //gamePlayPage.OnShow()
     GamePlayHudPanel.prototype.Show = function () {
         this.rootLayer.visible = true;
         this.coinTf.changeText(GameData.inst.coin.toString());
-        //   this.pauseBtn.visible = true;
-        //   this.resumeBtn.visible = false;
         WXPlatform.inst.ODC_InitHudData();
         this.targetSC.Start(0.3, 4);
         this.targetST.Start(10); //10秒更新一下目标
@@ -24083,6 +24168,9 @@ var GamePlayHudPanel = /** @class */ (function () {
         if (Laya.timer.currFrame % 60 == 0) {
             this.coinTf.changeText(GameData.inst.coin.toString());
         }
+        //显示能量
+        // console.log("========"+GameData.inst.speedPower+"  "+GameData.inst.speedPower.toFixed(1));
+        this.m_energyShow.text = GameData.inst.speedPower.toFixed(1) + "/" + GameData.inst.maxPower;
     };
     GamePlayHudPanel.prototype.RefreshCoin = function () {
         //TODO 此处可能有性能问题
@@ -24104,6 +24192,17 @@ var GamePlayHudPanel = /** @class */ (function () {
         Main.inst.Resume();
         //   this.pauseBtn.visible = true;
         this.resumeBtn.visible = false;
+    };
+    //点击加速
+    GamePlayHudPanel.prototype.OnPressAddSpeed = function () {
+        console.log("````OnPressAddSpeed");
+        GameWorld.inst.m_gameInput.m_addSpeedInput.PressSpeedButton();
+        var t_imge = this.sprArr[5];
+    };
+    //释放加速
+    GamePlayHudPanel.prototype.OnReleaseAddSpeed = function () {
+        GameWorld.inst.m_gameInput.m_addSpeedInput.ReleaseSpeedButton();
+        console.log("`````OnReleaseAddSpeed");
     };
     //-
     GamePlayHudPanel.prototype.OnClickInvite = function () {
@@ -24494,9 +24593,15 @@ var UIMaker = /** @class */ (function () {
         for (var i = 0; i < eventArr.length; i++) {
             var info = eventArr[i];
             var spr = sprArr[info[0]];
-            spr.on(Laya.Event.CLICK, info[1], info[2]);
+            if (info.length == 3) {
+                spr.on(Laya.Event.CLICK, info[1], info[2]);
+            }
+            else {
+                spr.on(info[3], info[1], info[2]);
+            }
         }
     };
+    // [ 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
     //注意，这里spr的锚点是图片中心
     UIMaker.BoxLayout = function (spr, bx, by, bw, bh, lx, ly, x, y) {
         // console.log("BoxL",spr.width,spr.height);
@@ -25733,6 +25838,16 @@ var GameData = /** @class */ (function () {
         this.coin = 0;
         //GamePlay用到的数据，Hero的数值，放到这里是因为有多个地方在用
         this.isHeroDie = false;
+        //最大能量
+        this.maxPower = 500;
+        //最小的开启加速的能量
+        this.minAddSpeedPower = 50;
+        //加速能量
+        this.speedPower = 50;
+        //加速时减少的能量
+        this.releasePowerIndex = 0;
+        //行走时增加的能量
+        this.addPowerRadioIndex = 0;
     }
     Object.defineProperty(GameData, "inst", {
         get: function () {
@@ -26764,10 +26879,10 @@ var Hero = /** @class */ (function (_super) {
     };
     //private touchStartH
     Hero.prototype.OnMouseDown = function () {
-          GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        GameWorld.inst.m_gameInput.GetAudioResult(4000);
     };
     Hero.prototype.OnMouseUp = function () {
-           GameWorld.inst.m_gameInput.GetAudioResult(400);
+        GameWorld.inst.m_gameInput.GetAudioResult(400);
         console.log("OnMouseUp");
     };
     return Hero;

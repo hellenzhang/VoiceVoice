@@ -12,7 +12,7 @@
         "res/meta/plane_meta.json",
         "res/meta/all_map.json",
         "res/meta/audio_decode.json",
-
+        "res/meta/addSpeed.json",
         //-
         "res/atlas/gameworld.atlas",
 

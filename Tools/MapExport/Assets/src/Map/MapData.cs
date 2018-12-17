@@ -7,7 +7,12 @@ public class MapData
 {
    public List<OneScene> all=new List<OneScene>();
 }
-
+public class TestData
+{
+    public List<int> all = new List<int>() {1,2,3,4};
+    public List<int> alltwo = new List<int>() { 1, 2, 3, 4 };
+    public List<int> allthree = new List<int>() { 1, 2, 3, 4 };
+}
 public class OneScene
 {
     public int m_id=0;

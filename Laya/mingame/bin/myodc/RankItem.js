@@ -7,8 +7,8 @@ var Item = {
         var t_temp = {
             //存储的玩家数据--，{avatarUrl,nickname,openid,KVData{key:string,value:string}}
             m_playerInfo:p_playerInfo,
-            m_hight:70,
-            m_width:70,
+            m_hight:50,
+            m_width:50,
             m_posx:0,
             m_posy:0,
             m_count:5,

@@ -437,10 +437,10 @@ function InitRanKInGame() {
 
          var t_imageborder = wx.createImage();
          t_imageborder.src = "res/borderLine.png";
-          function onLoadOK() {
+          function onLoadOK1() {
             m_sourceArry.push(t_imageborder);
           }
-          t_imageborder.onload = onLoadOK;
+          t_imageborder.onload = onLoadOK1;
     }
 
     function onOK(res) {    

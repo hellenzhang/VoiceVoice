@@ -12,8 +12,24 @@ public class Export : Editor {
     [MenuItem("Export/TTMapJson")]
     public static void test()
     {
-        string hh = "TT456464846468486,TT45,";
-        Debug.LogError(Regex.Unescape("sdasad\u7389\u54E5\u54E5\u5E05\u7389\u54E5\u54E5\u5E05"));
+        string testJsonFilePath = "E:/Engine/rext.json";
+        if (File.Exists(testJsonFilePath))
+        {
+            File.Delete(testJsonFilePath);
+        }
+        //找到当前路径
+        FileInfo file = new FileInfo(testJsonFilePath);
+
+        //判断有没有文件，有则打开文件，，没有创建后打开文件
+        StreamWriter sw = file.CreateText();
+        //获取数据
+        //ToJson接口将你的列表类传进去，，并自动转换为string类型
+        TestData t_mapData = new TestData();
+        string json = JsonMapper.ToJson(t_mapData);
+        sw.WriteLine(json);
+        //注意释放资源
+        sw.Close();
+        sw.Dispose();
     }
   
     [MenuItem("Export/MapJson")]

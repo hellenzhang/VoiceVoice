@@ -13,19 +13,16 @@ class GamePlayHudPanel {
     private targetSC: WXSCSprite;
 
     private targetST: SafeTimer;//定期更新目标榜
-
+    //能量显示
+    private m_energyShow:Laya.Text=new Laya.Text();
     //- 0和5的偏移为了适配腾讯自己的bug
     private uiInfoArr: Array<Array<any>> = [
         ["0 highCardLayer", "layer", 0, 0, 540, 120, "l", 0, "t", 0],
         ["1 coin_img", "img", 0, 0, 540, 120, "r", -10, "t", 90, "ui/ui_common/img_coin.png"],
         ["2 coin tf", "tf", 0, 0, 540, 120, 370, 90, 110, 40, "bf_24", "right"],
-
-      //  ["3 pauseBtn", "btn", 0, 0, 540, 120, "c", 0, "t", 10, "gameworld/ui_btn_pause.png"],
-   
-        // ["5 shareBtn", "btn", 0, -10, 540, 80, "l", 10, "b", 0, "gameworld/btn_share.png"],
-
-        ["3 rank", "btn9", 0, -10, 540, 80, "l", 10, "t", 200, "gameworld/share_btn_bg.png", 80, 80, 20, "gameworld/btn_share.png"],
+        ["3 shareBtn", "btn9", 0, -10, 540, 80, "l", 10, "b", 0, "gameworld/share_btn_bg.png", 80, 80, 20, "gameworld/btn_share.png"],
         ["4 resumeBtn", "btn", 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
+        ["5 addSpeedBtn", "btn",0, 500, 540, 80, "l", 10, "m", 0, "ui/ui_common/addSpeed.png", 80, 80, 20],
     ];
 
     //持有spr,减少gc清理内容
@@ -47,10 +44,9 @@ class GamePlayHudPanel {
 
         //事件处理函数
         this.eventConfigArr = [
-         //   [3, this, this.OnClickPause],
-            
-             [3, this, this.OnClickInvite],
              [4, this, this.OnClickResume],
+             [5, this, this.OnPressAddSpeed,Laya.Event.MOUSE_OVER],
+             [5, this, this.OnReleaseAddSpeed,Laya.Event.MOUSE_OUT],
         ];
 
         //生成ui
@@ -66,16 +62,15 @@ class GamePlayHudPanel {
         //点击屏幕继续
         this.resumeBtn = this.sprArr[4];
         this.resumeBtn.visible=false;
-        //---------------高分处理
-        // let highCardFg = GameUtils.CreateSprite("res/ui_odc/img_high_card_fg.png", 1);
-        // highCardFg.pivotX = 0;
-        // highCardFg.pivotY = 0;
-        // this.sprArr[0].addChild(highCardFg);
-
         this.targetSC = new WXSCSprite(Laya.stage.width, 55);
         this.targetSC.y=Laya.stage.height-55;;//Laya.stage.height-120;
         this.sprArr[0].addChild(this.targetSC);
 
+        //绑定位置
+        this.sprArr[5].addChild(this.m_energyShow); 
+        this.m_energyShow.pos(0,-30);//this.sprArr[5].height/2+10
+        this.m_energyShow.font="bf_24";
+        this.m_energyShow.fontSize=50;
     }
 
     //gamePlayPage.OnShow()
@@ -83,9 +78,6 @@ class GamePlayHudPanel {
         this.rootLayer.visible = true;
 
         this.coinTf.changeText(GameData.inst.coin.toString());
-
-     //   this.pauseBtn.visible = true;
-     //   this.resumeBtn.visible = false;
 
         WXPlatform.inst.ODC_InitHudData();
         this.targetSC.Start(0.3,4);
@@ -113,6 +105,10 @@ class GamePlayHudPanel {
         if(Laya.timer.currFrame%60==0){
              this.coinTf.changeText(GameData.inst.coin.toString());
         }
+
+        //显示能量
+        // console.log("========"+GameData.inst.speedPower+"  "+GameData.inst.speedPower.toFixed(1));
+        this.m_energyShow.text=GameData.inst.speedPower.toFixed(1)+"/"+GameData.inst.maxPower;
     }
 
 
@@ -143,7 +139,19 @@ class GamePlayHudPanel {
      //   this.pauseBtn.visible = true;
           this.resumeBtn.visible = false;
     }
-
+    //点击加速
+    private OnPressAddSpeed() {
+         console.log("````OnPressAddSpeed");
+         GameWorld.inst.m_gameInput.m_addSpeedInput.PressSpeedButton();
+         var t_imge:Laya.Image= (this.sprArr[5] as Laya.Image);
+         
+         
+    }
+    //释放加速
+    private OnReleaseAddSpeed() {
+        GameWorld.inst.m_gameInput.m_addSpeedInput.ReleaseSpeedButton();
+          console.log("`````OnReleaseAddSpeed");
+    }
     //-
     private OnClickInvite(){
         console.log("OnClientInvite");

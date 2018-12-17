@@ -38,6 +38,7 @@ var GameInput = /** @class */ (function () {
         Laya.stage.addChild(this.m_showRunPower);
         Laya.stage.addChild(this.m_showJumpPower);
         Laya.stage.addChild(this.m_showInputPower);
+        this.m_addSpeedInput = new AddSpeedInput();
     }
     //启动输入
     GameInput.prototype.StartUp = function () {
@@ -203,7 +204,21 @@ var GameInput = /** @class */ (function () {
         else if (this.m_decodeType == 2) {
             //发送
             if (this.m_managerHandler && this.m_currentDecodeData && this.m_inputStateEnum == InputStateEnum.On) {
-                this.m_managerHandler.call(this.that, this.m_currentDecodeData.m_runCoffe, this.m_currentDecodeData.m_jumpCoffe);
+                //获取x输入
+                var x_input = this.m_currentDecodeData.m_runCoffe + this.m_addSpeedInput.GetAddSpeed();
+                //增加能量--根据行走的距离乘以系数
+                GameData.inst.speedPower += this.m_addSpeedInput.m_addPowerRadio * x_input;
+                GameData.inst.speedPower = GameData.inst.speedPower > GameData.inst.maxPower ? GameData.inst.maxPower : GameData.inst.speedPower;
+                //减少能量
+                if (this.m_addSpeedInput.GetAddSpeed() > 0) {
+                    //减少能量                  
+                    GameData.inst.speedPower -= this.m_addSpeedInput.m_releasePowerRadio * x_input;
+                    GameData.inst.speedPower = GameData.inst.speedPower < 0 ? 0 : GameData.inst.speedPower;
+                    //检测是否可以继续
+                    this.m_addSpeedInput.CheckPowerOff();
+                }
+                this.m_addSpeedInput.Update();
+                this.m_managerHandler.call(this.that, x_input, this.m_currentDecodeData.m_jumpCoffe);
             }
         }
     };

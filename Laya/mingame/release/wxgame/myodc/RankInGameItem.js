@@ -59,10 +59,10 @@ var Item = {
                     t_temp.ctx.font = "13px Impact";
                     t_temp.ctx.textAlign = "left";
                     t_temp.ctx.fillStyle = "#b87333";
-                    t_temp.ctx.fillText(t_temp.m_playerInfo.nickname, t_temp.m_currentX, t_temp.m_hight+ 10);                   
+                    t_temp.ctx.fillText(t_temp.m_playerInfo.nickname, t_temp.m_currentX, t_temp.m_hight+ 30);                   
                     if (t_temp.m_currentX < t_temp.m_pageLength / 2)
                     {
-                       //可以踩了                  
+                       //可以踩了
                         t_temp.ctx.drawImage(t_temp.m_source[0], t_temp.m_currentX, 0, t_temp.m_width, t_temp.m_hight);
                     }
                 }               

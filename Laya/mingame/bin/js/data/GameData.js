@@ -10,6 +10,16 @@ var GameData = /** @class */ (function () {
         this.coin = 0;
         //GamePlay用到的数据，Hero的数值，放到这里是因为有多个地方在用
         this.isHeroDie = false;
+        //最大能量
+        this.maxPower = 500;
+        //最小的开启加速的能量
+        this.minAddSpeedPower = 50;
+        //加速能量
+        this.speedPower = 50;
+        //加速时减少的能量
+        this.releasePowerIndex = 0;
+        //行走时增加的能量
+        this.addPowerRadioIndex = 0;
     }
     Object.defineProperty(GameData, "inst", {
         get: function () {

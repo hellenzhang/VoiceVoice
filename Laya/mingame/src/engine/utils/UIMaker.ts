@@ -175,10 +175,17 @@ class UIMaker {
         for (let i: number = 0; i < eventArr.length; i++) {
             let info = eventArr[i];
             let spr = sprArr[info[0]];
-            spr.on(Laya.Event.CLICK, info[1], info[2]);
+            if (info.length==3) {
+                  spr.on(Laya.Event.CLICK, info[1], info[2]);
+            }
+            else
+            {
+                  spr.on(info[3], info[1], info[2]);
+            }
+          
         }
     }
-
+   // [ 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
     //注意，这里spr的锚点是图片中心
     private static BoxLayout(spr: Laya.Sprite, bx: number, by: number, bw: number, bh: number, lx: string, ly: string, x: number, y: number) {
 

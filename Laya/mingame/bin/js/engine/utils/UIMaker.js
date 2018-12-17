@@ -161,9 +161,15 @@ var UIMaker = /** @class */ (function () {
         for (var i = 0; i < eventArr.length; i++) {
             var info = eventArr[i];
             var spr = sprArr[info[0]];
-            spr.on(Laya.Event.CLICK, info[1], info[2]);
+            if (info.length == 3) {
+                spr.on(Laya.Event.CLICK, info[1], info[2]);
+            }
+            else {
+                spr.on(info[3], info[1], info[2]);
+            }
         }
     };
+    // [ 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
     //注意，这里spr的锚点是图片中心
     UIMaker.BoxLayout = function (spr, bx, by, bw, bh, lx, ly, x, y) {
         // console.log("BoxL",spr.width,spr.height);

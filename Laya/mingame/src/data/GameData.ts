@@ -27,7 +27,16 @@ class GameData {
 
     //GamePlay用到的数据，Hero的数值，放到这里是因为有多个地方在用
     public isHeroDie=false;
-
+    //最大能量
+    public maxPower:number=500;
+    //最小的开启加速的能量
+    public minAddSpeedPower:number=50;
+    //加速能量
+    public speedPower:number=50;
+    //加速时减少的能量
+    public releasePowerIndex:number=0;
+    //行走时增加的能量
+    public addPowerRadioIndex:number=0;
     //初始化，从本地存储读取总分和最高分
     public Initialize() {
       

@@ -155,7 +155,7 @@ class WXPlatform {
 
     //=============================微信后台储存得分==============================
     //callback通知可以绘制排行榜了
-    public SaveScore(score: number) {
+    public SaveScore(score: string) {
         console.log("SaveScore", score);
         //存储的字段的名字
         let KEYNAME = "score";
@@ -291,6 +291,8 @@ class WXPlatform {
             return;
         }
        let odc = wx.getOpenDataContext();
+       //记录时间
+
        //获取一下分数
        odc.postMessage({ cmd: "rank_in_game_reset",score:p_score});
     }

@@ -34,8 +34,8 @@ var GameData = /** @class */ (function () {
     //初始化，从本地存储读取总分和最高分
     GameData.prototype.Initialize = function () {
         //-金币
-        this.highCoinSD = new SavedData("voice_high_score");
-        this.totalCoinSD = new SavedData("voice_total_score", 0);
+        this.highCoinSD = new SavedTimeData("voice_high_score");
+        this.totalCoinSD = new SavedData("voice_total_score");
         this.highCoinSD.Load();
         this.totalCoinSD.Load();
         console.log("GameData.initilize", this.highCoinSD.value, this.totalCoinSD.value);
@@ -49,6 +49,8 @@ var GameData = /** @class */ (function () {
     GameData.prototype.RefreshCoin = function () {
         if (this.coin > this.highCoinSD.value) {
             this.highCoinSD.value = this.coin;
+            this.highCoinSD.Save();
+            WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.GetDateValue());
         }
         this.totalCoinSD.value += this.coin;
         //存储
@@ -57,9 +59,8 @@ var GameData = /** @class */ (function () {
     //gamePlay一局结束之后，更新、保存各种数据
     GameData.prototype.EndGamePlay = function () {
     };
-    //保存钱币
+    //保存非时间相关数据
     GameData.prototype.SaveMoney = function () {
-        this.highCoinSD.Save();
         this.totalCoinSD.Save();
     };
     return GameData;

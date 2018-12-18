@@ -222,6 +222,17 @@ var GameUtils = /** @class */ (function () {
         spr.height = texture.height;
         return spr;
     };
+    GameUtils.GetOrderTime = function (p_date) {
+        p_date.setHours(0);
+        p_date.setMinutes(0);
+        p_date.setSeconds(0);
+        p_date.setMilliseconds(0);
+        return p_date.getTime();
+    };
+    GameUtils.CompareTime = function (p_date, p_originTime, p_totalTime) {
+        var t_dateTime = p_date.getTime();
+        return t_dateTime - p_originTime < p_totalTime;
+    };
     return GameUtils;
 }());
 //# sourceMappingURL=GameUtils.js.map

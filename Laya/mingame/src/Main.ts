@@ -58,6 +58,9 @@ class Main {
 
 		//-打开启动界面
 		GamePagesManager.inst.SwitchPage(GameLoadingPage.ID, null);
+		var t_dataOne=(new Date()).getTime();
+		var t_dataTwo=new Date(t_dataOne+2*24*60*60*1000);
+		console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&:"+(new Date()).toDateString()+"   "+t_dataTwo.toDateString());
 	}
 
 	private InitLaya() {

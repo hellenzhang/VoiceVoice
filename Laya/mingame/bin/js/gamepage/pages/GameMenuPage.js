@@ -77,21 +77,6 @@ var GameMenuPage = /** @class */ (function (_super) {
         GamePagesManager.inst.SwitchPage(GameRankPage.ID, true);
     };
     GameMenuPage.prototype.OnClickCoinBtn = function () {
-        var a = Laya.LocalStorage.getItem("YUCeshi");
-        if (a) {
-            this.coinBtn.SetLabel(a);
-        }
-        else {
-            this.coinBtn.SetLabel("NO");
-        }
-        Laya.LocalStorage.setItem("YUCeshi", "zhende you ha");
-        console.log("花钱发分享");
-        GameData.inst.totalCoinSD.value = 0;
-        GameData.inst.highCoinSD.value = 0;
-        GameData.inst.SaveMoney();
-        //   this.coinBtn.SetLabel("no money");
-        //   WXPlatform.inst.StartRecord();
-        //  this.DrawAudio([200,100,0,0,50,60,40,50,8,0,600]);
         WXPlatform.inst.Share("花钱发分享", "res/share1.jpg", "from=coin");
     };
     GameMenuPage.prototype.ShwoTest = function (p_string) {

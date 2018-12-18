@@ -26,10 +26,10 @@ var RankPane = /** @class */ (function (_super) {
     }
     //true表示先把分数存一下，然后再get,这样提取数据比较准确
     RankPane.prototype.Show = function (needSaveCoin) {
-        //保存得分
-        if (needSaveCoin) {
-            WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.value);
-        }
+        // //保存得分
+        // if (needSaveCoin) {
+        //     WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.value);
+        // }
         //退出的时候，sc要清理掉
         WXPlatform.inst.ODC_Clear(500, 600);
         //-

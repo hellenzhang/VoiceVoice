@@ -259,5 +259,18 @@ class GameUtils {
 
 		return spr;
 	}
-
+    
+	public static GetOrderTime(p_date:Date)
+	{
+		p_date.setHours(0);
+		p_date.setMinutes(0);
+		p_date.setSeconds(0);
+		p_date.setMilliseconds(0);
+		return p_date.getTime();
+	}
+	public static CompareTime(p_date:Date,p_originTime:number,p_totalTime:number)
+	{
+		var t_dateTime=p_date.getTime();
+		return t_dateTime-p_originTime<p_totalTime;
+	}
 }

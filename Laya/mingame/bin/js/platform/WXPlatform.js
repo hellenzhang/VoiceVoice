@@ -250,6 +250,7 @@ var WXPlatform = /** @class */ (function () {
             return;
         }
         var odc = wx.getOpenDataContext();
+        //记录时间
         //获取一下分数
         odc.postMessage({ cmd: "rank_in_game_reset", score: p_score });
     };

@@ -4,8 +4,8 @@
 class SavedData{
 
     public value:number=0;
-
-    constructor(private key:string,private defaultValue:number=0){
+  
+    constructor(protected key:string,protected defaultValue:number=0){
         this.value=this.defaultValue;
     }
 
@@ -15,7 +15,7 @@ class SavedData{
     }
 
     public Load(){
-        let a=Laya.LocalStorage.getItem(this.key);
+        let a=Laya.LocalStorage.getItem(this.key);       
         if(a){
             this.value=parseInt(a);
         }else{
@@ -27,6 +27,7 @@ class SavedData{
 
     public Save(){
         Laya.LocalStorage.setItem(this.key,this.value.toString());
+         Laya.LocalStorage.setItem(this.key+"date",new Date().getTime().toString());
          console.log("存档数据",this.key,this.value);
     }
     

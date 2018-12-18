@@ -17,7 +17,7 @@ class GameData {
     //本次gamePlay的金币数--同比与其他数据
     public coin: number = 0;
     //单次gamePlay的最高成绩
-    public highCoinSD: SavedData;
+    public highCoinSD: SavedTimeData;
 
     //总金币数,自开始玩游戏以来的总金币数
     public totalCoinSD: SavedData;
@@ -41,8 +41,8 @@ class GameData {
     public Initialize() {
       
         //-金币
-        this.highCoinSD = new SavedData("voice_high_score");
-        this.totalCoinSD = new SavedData("voice_total_score",0);
+        this.highCoinSD = new SavedTimeData("voice_high_score");
+        this.totalCoinSD = new SavedData("voice_total_score");
 
         this.highCoinSD.Load();
         this.totalCoinSD.Load();
@@ -65,6 +65,8 @@ class GameData {
     public RefreshCoin(){
          if (this.coin > this.highCoinSD.value) {
             this.highCoinSD.value = this.coin;
+             this.highCoinSD.Save();
+              WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.GetDateValue());
         }
         this.totalCoinSD.value += this.coin;
 
@@ -77,9 +79,8 @@ class GameData {
        
     }
 
-    //保存钱币
-    public SaveMoney() {
-        this.highCoinSD.Save();
+    //保存非时间相关数据
+    public SaveMoney() {       
         this.totalCoinSD.Save();
     }
    

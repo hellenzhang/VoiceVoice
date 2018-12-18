@@ -23063,6 +23063,7 @@ var WXPlatform = /** @class */ (function () {
             return;
         }
         var odc = wx.getOpenDataContext();
+        //记录时间
         //获取一下分数
         odc.postMessage({ cmd: "rank_in_game_reset", score: p_score });
     };
@@ -23613,7 +23614,6 @@ var GameWorld = /** @class */ (function () {
         GameWorld.inst.hero.Die();
         //保存数据
         GameData.inst.RefreshCoin();
-        WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.value);
         GameWorld.inst.m_gameInput.Stop();
     };
     //退出
@@ -24695,6 +24695,7 @@ var SavedData = /** @class */ (function () {
     };
     SavedData.prototype.Save = function () {
         Laya.LocalStorage.setItem(this.key, this.value.toString());
+        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
         console.log("存档数据", this.key, this.value);
     };
     return SavedData;
@@ -24993,6 +24994,17 @@ var GameUtils = /** @class */ (function () {
         spr.width = texture.width;
         spr.height = texture.height;
         return spr;
+    };
+    GameUtils.GetOrderTime = function (p_date) {
+        p_date.setHours(0);
+        p_date.setMinutes(0);
+        p_date.setSeconds(0);
+        p_date.setMilliseconds(0);
+        return p_date.getTime();
+    };
+    GameUtils.CompareTime = function (p_date, p_originTime, p_totalTime) {
+        var t_dateTime = p_date.getTime();
+        return t_dateTime - p_originTime < p_totalTime;
     };
     return GameUtils;
 }());
@@ -25861,8 +25873,8 @@ var GameData = /** @class */ (function () {
     //初始化，从本地存储读取总分和最高分
     GameData.prototype.Initialize = function () {
         //-金币
-        this.highCoinSD = new SavedData("voice_high_score");
-        this.totalCoinSD = new SavedData("voice_total_score", 0);
+        this.highCoinSD = new SavedTimeData("voice_high_score");
+        this.totalCoinSD = new SavedData("voice_total_score");
         this.highCoinSD.Load();
         this.totalCoinSD.Load();
         console.log("GameData.initilize", this.highCoinSD.value, this.totalCoinSD.value);
@@ -25876,6 +25888,8 @@ var GameData = /** @class */ (function () {
     GameData.prototype.RefreshCoin = function () {
         if (this.coin > this.highCoinSD.value) {
             this.highCoinSD.value = this.coin;
+            this.highCoinSD.Save();
+            WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.GetDateValue());
         }
         this.totalCoinSD.value += this.coin;
         //存储
@@ -25884,9 +25898,8 @@ var GameData = /** @class */ (function () {
     //gamePlay一局结束之后，更新、保存各种数据
     GameData.prototype.EndGamePlay = function () {
     };
-    //保存钱币
+    //保存非时间相关数据
     GameData.prototype.SaveMoney = function () {
-        this.highCoinSD.Save();
         this.totalCoinSD.Save();
     };
     return GameData;
@@ -26025,10 +26038,10 @@ var RankPane = /** @class */ (function (_super) {
     }
     //true表示先把分数存一下，然后再get,这样提取数据比较准确
     RankPane.prototype.Show = function (needSaveCoin) {
-        //保存得分
-        if (needSaveCoin) {
-            WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.value);
-        }
+        // //保存得分
+        // if (needSaveCoin) {
+        //     WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.value);
+        // }
         //退出的时候，sc要清理掉
         WXPlatform.inst.ODC_Clear(500, 600);
         //-
@@ -26213,6 +26226,58 @@ var WXSCSprite = /** @class */ (function (_super) {
     return WXSCSprite;
 }(Laya.Sprite));
 //# sourceMappingURL=WXSCSprite.js.map
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+/***存储有时间效益的数值 */
+var SavedTimeData = /** @class */ (function (_super) {
+    __extends(SavedTimeData, _super);
+    function SavedTimeData(key, defaultValue) {
+        if (defaultValue === void 0) { defaultValue = 0; }
+        return _super.call(this, key, defaultValue) || this;
+    }
+    SavedTimeData.prototype.Load = function () {
+        var a = Laya.LocalStorage.getItem(this.key);
+        var t_date = Laya.LocalStorage.getItem(this.key + "date");
+        if (t_date == null || t_date == "") {
+            this.value = this.defaultValue;
+        }
+        else {
+            //对比时间是否过期
+            var t_datenum = parseInt(t_date);
+            //小于一天
+            if (GameUtils.CompareTime(new Date(), t_datenum, 86400000)) {
+                this.value = parseInt(a);
+            }
+            else {
+                this.value = this.defaultValue;
+            }
+        }
+        console.log("读取数据", this.key, this.value);
+    };
+    SavedTimeData.prototype.Save = function () {
+        _super.prototype.Save.call(this);
+        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
+    };
+    /**
+     * 获取时间和数据的字符串，格式为数据_时间
+     */
+    SavedTimeData.prototype.GetDateValue = function () {
+        return this.value + "_" + GameUtils.GetOrderTime(new Date());
+    };
+    return SavedTimeData;
+}(SavedData));
+//# sourceMappingURL=SavedTimeData.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -26430,21 +26495,6 @@ var GameMenuPage = /** @class */ (function (_super) {
         GamePagesManager.inst.SwitchPage(GameRankPage.ID, true);
     };
     GameMenuPage.prototype.OnClickCoinBtn = function () {
-        var a = Laya.LocalStorage.getItem("YUCeshi");
-        if (a) {
-            this.coinBtn.SetLabel(a);
-        }
-        else {
-            this.coinBtn.SetLabel("NO");
-        }
-        Laya.LocalStorage.setItem("YUCeshi", "zhende you ha");
-        console.log("花钱发分享");
-        GameData.inst.totalCoinSD.value = 0;
-        GameData.inst.highCoinSD.value = 0;
-        GameData.inst.SaveMoney();
-        //   this.coinBtn.SetLabel("no money");
-        //   WXPlatform.inst.StartRecord();
-        //  this.DrawAudio([200,100,0,0,50,60,40,50,8,0,600]);
         WXPlatform.inst.Share("花钱发分享", "res/share1.jpg", "from=coin");
     };
     GameMenuPage.prototype.ShwoTest = function (p_string) {
@@ -27406,6 +27456,9 @@ var Main = /** @class */ (function () {
         this.isRunning = true;
         //-打开启动界面
         GamePagesManager.inst.SwitchPage(GameLoadingPage.ID, null);
+        var t_dataOne = (new Date()).getTime();
+        var t_dataTwo = new Date(t_dataOne + 2 * 24 * 60 * 60 * 1000);
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&:" + (new Date()).toDateString() + "   " + t_dataTwo.toDateString());
     };
     Main.prototype.InitLaya = function () {
         //初始化微信小游戏

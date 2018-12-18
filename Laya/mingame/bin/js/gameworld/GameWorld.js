@@ -143,7 +143,6 @@ var GameWorld = /** @class */ (function () {
         GameWorld.inst.hero.Die();
         //保存数据
         GameData.inst.RefreshCoin();
-        WXPlatform.inst.SaveScore(GameData.inst.highCoinSD.value);
         GameWorld.inst.m_gameInput.Stop();
     };
     //退出

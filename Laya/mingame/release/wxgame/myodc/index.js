@@ -7,6 +7,10 @@
  */
 var RandGameItem=require("./RankInGameItem.js");
 
+const SaveKey="score";
+//排行榜刷新日期
+const RefreshDay=1;
+
 //玩家(自己)信息，被外部传入，知道自己是谁
 var userInfo; //
 
@@ -44,23 +48,25 @@ function onMsg(data) {
       if (rankPageIdx < -1) {
         rankPageIdx = -1;
       }
-
+      //这个就是打开就要重新获取，实时刷新
       exeCmd_drawRankList();
 
       break;
 
     case "init_hud_data": //提取排行榜数据，缓存
+      //进入主游戏界面时，获取好友的分数，进行设置
       InitRanKInGame();
-    //  exeCmd_initHudData(data.score);
       break;
     case "update_hud": //左上角的标兵
 
       exeCmd_updateHud(data.score);
       break;
     case "rank_in_game":
+    //玩家移动时，绘制排行数据
       DrawRankInGame(data.p_x);
       break;
     case "rank_in_game_reset":
+    //重置游戏，将自己的数据重新记录一下
       FreshUserInGame(data.score);
       Reset();
       break;
@@ -94,20 +100,6 @@ function getUserRankIndex(dataArr) {
   return aa;
 }
 
-//更新玩家自己数据,每次绘制排行榜的时候
-function refreshUserScore() {
-
-  for (var i = 0; i < friendItemArr.length; i++) {
-    var item = friendItemArr[i];
-    //console.log(item.nickname, userInfo.nickName);
-    if (item.nickname == userInfo.nickName) {
-      //item.KVDataList[0].value=userHighCoin;
-      setScoreToItem(item, userScore);
-      break;
-    }
-  }
-}
-
 
 //==============clear============
 //-
@@ -128,13 +120,8 @@ function exeCmd_drawRankList() {
   // console.log("exeCmd_drawRank");
 
   clear();
-
-  if (hasGotRankData) {
-    console.log("fast draw");
-    drawRankList();
-  } else {
-    fetchRankList(drawRankList);
-  }
+  fetchRankList(drawRankList);
+ 
 }
 
 //提取好友得分数据,这个要预取。菜单界面就会提取
@@ -155,15 +142,13 @@ function fetchRankList(callback) {
   console.log("fetchData start ", nowTime());
   //读取数据
   wx.getFriendCloudStorage({
-    keyList: ["score"],
+    keyList: [SaveKey],
     success: onOK
   });
 }
 
 //展示自己的前3和后一名
-function drawRankList() {
-  //更新自己数值
-  refreshUserScore();
+function drawRankList() { 
   //排序
   friendItemArr.sort(sortItemByScore);
 
@@ -248,30 +233,30 @@ function getScoreFromItem(item) {
   var arr = item.KVDataList;
   for (var index = 0; index < arr.length; index++) {
     var ee = arr[index];
-    if (ee.key == "score") {
-      return parseInt(ee.value);
+    //如果存储日期比当面的晚两天，那就是刷新数据了，如果不是，就返回存储的数值
+    if (ee.key == SaveKey) {
+       return GetRealValue(ee.value);
     }
   }
   return 0;
 }
-
-//刷新玩家本地分数用的
-function setScoreToItem(item, score, plane) {
-  var arr = item.KVDataList;
-  for (var index = 0; index < arr.length; index++) {
-    var ee = arr[index];
-    if (ee.key == "score") {
-      ee.value = score;
-
-    }
-
-  }
-
+//根据key获取数值
+function GetRealValue(p_value) {
+  //下划线分割 数值_日期,
+   var t_value=p_value.split("_");
+      if (t_value.length>1) {
+        //日期比较，如果是两天后就刷新,记录的时候记录时间，当前天的0点，所以如果小于48小时就是在合理范围内
+        var t_recordTime=parseInt(t_value[1]);
+        if ( nowTime()-t_recordTime<RefreshDay*86400000) {
+          return parseInt(t_value[0]);
+        }
+      }
+      return 0;
 }
 
 
 function nowTime() {
-  return (new Date()).getTime();
+  return new Date().getTime();
 }
 
 function clamp(v, min, max) {
@@ -310,30 +295,30 @@ var hudItemArr;
 var currTargetItemOpenID;
 var currTargetItem;
 
-function exeCmd_initHudData(userScore) {
-  //console.log("exeCmd_initHudData", userScore);
+// function exeCmd_initHudData(userScore) {
+//   //console.log("exeCmd_initHudData", userScore);
 
-  clear();
+//   clear();
 
-  currTargetItemOpenID = null; //目标玩家id
-  currTargetItem = null;
+//   currTargetItemOpenID = null; //目标玩家id
+//   currTargetItem = null;
 
-  function onOK(res) {
-    // console.log("fetchData OK");
+//   function onOK(res) {
+//     // console.log("fetchData OK");
 
-    hudItemArr = res.data;
-    hudItemArr.sort(sortItemByScore);
+//     hudItemArr = res.data;
+//     hudItemArr.sort(sortItemByScore);
 
-    //
-    exeCmd_updateHud(userScore);
-  }
+//     //
+//     exeCmd_updateHud(userScore);
+//   }
 
-  //读取数据
-  wx.getFriendCloudStorage({
-    keyList: ["score"],
-    success: onOK
-  });
-}
+//   //读取数据
+//   wx.getFriendCloudStorage({
+//     keyList: ["score","dataTime"],
+//     success: onOK
+//   });
+// }
 
 //==============updateHud==============
 //更新我的榜样目标
@@ -451,7 +436,7 @@ function InitRanKInGame() {
 
   //读取数据
   wx.getFriendCloudStorage({
-    keyList: ["score"],
+    keyList: [SaveKey],
     success: onOK
   });
 }
@@ -492,10 +477,10 @@ function LoadRandInfo(p_x) {
     for (var index = 0; index < item.KVDataList.length; index++) {
       var element = item.KVDataList[index];
       //找到对应的键
-      if (element.key == "score") {
+      if (element.key == SaveKey) {
         //对比当前数据,因为好友也就那几个，这里就不用做优化
         //获取当前数值大于上一次的距离，并且小于最大的10的距离，就把他加载出来[)左闭右开
-        var t_pageLength=parseFloat(element.value)+270;
+        var t_pageLength=GetRealValue(element.value)+270;
         if (t_pageLength >= p_x&&t_pageLength<p_x+t_moreLength) {
           //如果没有下载，那就开始添加
           var t_result=CheckContains(rankInGameArry,item.openid);
@@ -552,7 +537,7 @@ function FreshUserInGame(p_data) {
       for (var index = 0; index < item.KVDataList.length; index++) {
         var element = item.KVDataList[index];
         //找到对应的键
-        if (element.key == "score") {
+        if (element.key == SaveKey) {
            element.value=p_data;
          }
       }

@@ -71,8 +71,9 @@ var GameRankPage = /** @class */ (function (_super) {
     GameRankPage.prototype.OnUpdate = function () {
         this.rankPane.Update();
     };
-    // public OnHide() {
-    // }
+    GameRankPage.prototype.OnHide = function () {
+        this.rankPane.Clear();
+    };
     //-----------事件处理----------
     GameRankPage.prototype.OnClickBack = function () {
         //console.log("OnClickOKBtn");

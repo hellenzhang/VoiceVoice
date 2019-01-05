@@ -19,6 +19,24 @@ var AddSpeedInput = /** @class */ (function () {
         this.m_releasePowerRadio = this.m_releasePowerRadioArry[GameData.inst.releasePowerIndex];
     };
     /**
+     * 设置控制的UI图片
+     */
+    AddSpeedInput.prototype.SetUI = function (p_sprites, p_cdSprites) {
+        this.m_uiAddSpeedSprite = p_sprites;
+        this.m_uiCDSprite = p_cdSprites;
+        this.SetUIState(this.CheckCanAddSpeed());
+    };
+    AddSpeedInput.prototype.SetUIState = function (p_isShow) {
+        if (p_isShow) {
+            this.m_uiAddSpeedSprite.visible = false;
+            this.m_uiCDSprite.visible = true;
+        }
+        else {
+            this.m_uiAddSpeedSprite.visible = true;
+            this.m_uiCDSprite.visible = false;
+        }
+    };
+    /**
      * GetAddSpeed
    :number  */
     AddSpeedInput.prototype.GetAddSpeed = function () {
@@ -42,12 +60,17 @@ var AddSpeedInput = /** @class */ (function () {
     AddSpeedInput.prototype.ReleaseSpeedButton = function () {
         this.m_isPress = false;
         this.m_currentAddSpeed = 0;
+        this.SetUIState(this.CheckCanAddSpeed());
     };
     /**
      * PowerOff
      */
     AddSpeedInput.prototype.CheckPowerOff = function () {
         if (GameData.inst.speedPower <= this.m_releasePowerRadio) {
+            if (this.m_currentAddSpeed != 0) {
+                //能量不足===
+                this.SetUIState(false);
+            }
             this.m_currentAddSpeed = 0;
         }
     };
@@ -60,6 +83,9 @@ var AddSpeedInput = /** @class */ (function () {
             this.PressSpeedButton();
         }
     };
+    /**
+     * 检测是否可以加速了
+     */
     AddSpeedInput.prototype.CheckCanAddSpeed = function () {
         if (GameData.inst.speedPower >= GameData.inst.minAddSpeedPower) {
             return true;

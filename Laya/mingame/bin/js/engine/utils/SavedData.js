@@ -25,7 +25,6 @@ var SavedData = /** @class */ (function () {
     };
     SavedData.prototype.Save = function () {
         Laya.LocalStorage.setItem(this.key, this.value.toString());
-        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
         console.log("存档数据", this.key, this.value);
     };
     return SavedData;

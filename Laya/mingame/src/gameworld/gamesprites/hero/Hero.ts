@@ -132,11 +132,19 @@ class Hero extends Actor {
     private touchStartHeroX: number = 0;
     //private touchStartH
     private OnMouseDown() {
-        GameWorld.inst.m_gameInput.GetAudioResult(4000);
+    let wx = Laya.Browser.window.wx;
+        if (!wx) {
+             GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        }
+     
     }
 
     private OnMouseUp() {
-        GameWorld.inst.m_gameInput.GetAudioResult(400);
+        let wx = Laya.Browser.window.wx;
+        if (!wx) {
+             GameWorld.inst.m_gameInput.GetAudioResult(400);
+        }
+      
         console.log("OnMouseUp");
     }
     

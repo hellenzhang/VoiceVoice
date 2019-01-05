@@ -27,6 +27,7 @@ var RES_URL_ARR = [
 //动画，预热用，单个动画解析230ms,极高
 var ANIM_URL_ARR = [
     "res/hero_ani/hero_0.ani",
+    "res/atlas/hero/hero_jump.ani",
     "res/mob_ani/mob_100.ani",
 ];
 //加载字体

@@ -1,0 +1,59 @@
+{
+    "frames": {
+        "ui_common.png": {
+            "frame": {
+                "h": 256,
+                "idx": 0,
+                "w": 284,
+                "x": 0,
+                "y": 195
+            },
+            "sourceSize": {
+                "h": 256,
+                "w": 284
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "ui_gamemenu.png": {
+            "frame": {
+                "h": 194,
+                "idx": 0,
+                "w": 384,
+                "x": 0,
+                "y": 0
+            },
+            "sourceSize": {
+                "h": 194,
+                "w": 384
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        "ui_gamerank.png": {
+            "frame": {
+                "h": 76,
+                "idx": 0,
+                "w": 231,
+                "x": 285,
+                "y": 195
+            },
+            "sourceSize": {
+                "h": 76,
+                "w": 231
+            },
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    },
+    "meta": {
+        "image": "ui.png",
+        "prefix": "ui/"
+    }
+}

@@ -52,7 +52,16 @@ function onMsg(data) {
       exeCmd_drawRankList();
 
       break;
-
+    case "newclear":
+     //新的排行
+      rankPageIdx = -1;
+     exeCmd_drawRankList();
+     TouchListen();
+    break;
+    case "clear":
+      //清理
+      TouchRemove();
+    break;
     case "init_hud_data": //提取排行榜数据，缓存
       //进入主游戏界面时，获取好友的分数，进行设置
       InitRanKInGame();
@@ -79,8 +88,58 @@ function onMsg(data) {
 
 //-监听来自主域消息
 wx.onMessage(onMsg);
+var t_with=0;
+var t_height=0;
+function TouchListen() {
+  //监听滑屏事件
+  wx.onTouchEnd(function touch(res){m_beforYpoint=0;});
+   wx.onTouchStart(function touch(res){m_beforYpoint=res.changedTouches[0].clientY;});
+   wx.onTouchMove(OnTouchMove);
+    
+      wx.getSystemInfo({
+        success(res) {          
+          t_with = res.windowWidth;
+          t_height = res.windowHeight;
+        }
+      })
+}
 
+function TouchRemove() {
+  //取消滑屏事件
+    wx.offTouchMove(OnTouchMove);
+}
+function onOK(res) {
+  if (t_with==0) {
+    return;
+  }
 
+        console.log("f88888888", res.changedTouches.length, res.changedTouches[0].clientX, res.changedTouches[0].clientY, wx.getSharedCanvas().width, wx.getSharedCanvas().height, t_with, t_height);
+
+}
+//记录上一次滑动的坐标
+var m_beforYpoint;
+function OnTouchMove(res) {
+   if (t_with==0) {
+    return;
+  }
+  //获取x坐标
+  var t_currentX=res.changedTouches[0].clientX;
+  var t_currentY=res.changedTouches[0].clientY;
+  //查看是否合法
+  if (PointLegal(t_currentX,t_currentY)) {
+    //开始移动距离
+    var t_movex=t_currentY-m_beforYpoint;
+
+  }
+}
+function PointLegal(p_x,p_y) {
+  if (p_x>=t_with/6&&p_x<=t_with*5/6) {
+     if (p_y>=t_height/6&&p_y<=t_height*5/6) {
+       return true;
+     }
+  }
+  return false;
+}
 //获取玩家当前的rankIdx
 function getUserRankIndex(dataArr) {
 
@@ -161,22 +220,12 @@ function drawRankList() {
 
   //展示
   if (rankPageIdx == -1) {//-1显示默认
-    drawItem(0, 0, ctx);
-    drawItem(1, 1, ctx);
-    drawItem(2, 2, ctx);
-    if (userRankIdx > 3) {
-      drawItem(3, userRankIdx - 1, ctx);
-    } else {
-      drawItem(3, 3, ctx);
-    }
-    if (userRankIdx > 4) {
-      drawItem(4, userRankIdx, ctx);
-    } else {
-      drawItem(4, 4, ctx);
+    for (var i = 0; i < 5; i++) {
+      drawItem(i,  i , ctx);
     }
   } else {//其他值显示翻页值
     for (var i = 0; i < 5; i++) {
-      drawItem(i, rankPageIdx * 5 + i + 3, ctx);
+      drawItem(i, rankPageIdx * 5 + i + 6, ctx);
     }
   }
 

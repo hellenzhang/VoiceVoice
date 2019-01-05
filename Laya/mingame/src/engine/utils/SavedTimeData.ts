@@ -28,7 +28,7 @@ class SavedTimeData extends SavedData {
     }
     public Save() {
         super.Save();
-        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
+        Laya.LocalStorage.setItem(this.key + "date",GameUtils.GetOrderTime(new Date()).toString());
     }
     /**
      * 获取时间和数据的字符串，格式为数据_时间

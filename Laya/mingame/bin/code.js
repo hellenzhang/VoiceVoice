@@ -22802,6 +22802,7 @@ var RES_URL_ARR = [
 //动画，预热用，单个动画解析230ms,极高
 var ANIM_URL_ARR = [
     "res/hero_ani/hero_0.ani",
+    "res/atlas/hero/hero_jump.ani",
     "res/mob_ani/mob_100.ani",
 ];
 //加载字体
@@ -23963,6 +23964,24 @@ var AddSpeedInput = /** @class */ (function () {
         this.m_releasePowerRadio = this.m_releasePowerRadioArry[GameData.inst.releasePowerIndex];
     };
     /**
+     * 设置控制的UI图片
+     */
+    AddSpeedInput.prototype.SetUI = function (p_sprites, p_cdSprites) {
+        this.m_uiAddSpeedSprite = p_sprites;
+        this.m_uiCDSprite = p_cdSprites;
+        this.SetUIState(this.CheckCanAddSpeed());
+    };
+    AddSpeedInput.prototype.SetUIState = function (p_isShow) {
+        if (p_isShow) {
+            this.m_uiAddSpeedSprite.visible = false;
+            this.m_uiCDSprite.visible = true;
+        }
+        else {
+            this.m_uiAddSpeedSprite.visible = true;
+            this.m_uiCDSprite.visible = false;
+        }
+    };
+    /**
      * GetAddSpeed
    :number  */
     AddSpeedInput.prototype.GetAddSpeed = function () {
@@ -23986,12 +24005,17 @@ var AddSpeedInput = /** @class */ (function () {
     AddSpeedInput.prototype.ReleaseSpeedButton = function () {
         this.m_isPress = false;
         this.m_currentAddSpeed = 0;
+        this.SetUIState(this.CheckCanAddSpeed());
     };
     /**
      * PowerOff
      */
     AddSpeedInput.prototype.CheckPowerOff = function () {
         if (GameData.inst.speedPower <= this.m_releasePowerRadio) {
+            if (this.m_currentAddSpeed != 0) {
+                //能量不足===
+                this.SetUIState(false);
+            }
             this.m_currentAddSpeed = 0;
         }
     };
@@ -24004,6 +24028,9 @@ var AddSpeedInput = /** @class */ (function () {
             this.PressSpeedButton();
         }
     };
+    /**
+     * 检测是否可以加速了
+     */
     AddSpeedInput.prototype.CheckCanAddSpeed = function () {
         if (GameData.inst.speedPower >= GameData.inst.minAddSpeedPower) {
             return true;
@@ -24109,6 +24136,7 @@ var GamePlayHudPanel = /** @class */ (function () {
             ["3 shareBtn", "btn9", 0, -10, 540, 80, "l", 10, "b", 0, "gameworld/share_btn_bg.png", 80, 80, 20, "gameworld/btn_share.png"],
             ["4 resumeBtn", "btn", 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
             ["5 addSpeedBtn", "btn", 0, 500, 540, 80, "l", 10, "m", 0, "ui/ui_common/addSpeed.png", 80, 80, 20],
+            ["6 cdmask", "btn", 0, 500, 540, 80, "l", 10, "m", 0, "ui/ui_common/cdmask.png", 80, 80, 20],
         ];
         this.targetST = new SafeTimer();
         //-
@@ -24137,8 +24165,10 @@ var GamePlayHudPanel = /** @class */ (function () {
         ; //Laya.stage.height-120;
         this.sprArr[0].addChild(this.targetSC);
         //绑定位置
-        this.sprArr[5].addChild(this.m_energyShow);
-        this.m_energyShow.pos(0, -30); //this.sprArr[5].height/2+10
+        // this.sprArr[5].addChild(this.m_energyShow); 
+        this.rootLayer.addChild(this.m_energyShow);
+        this.m_energyShow.pos(this.sprArr[5].x - this.sprArr[5].width / 2, this.sprArr[5].y - this.sprArr[5].height / 2 - 30); //this.sprArr[5].height/2+10
+        // console.log("77777777778888888888888:",this.sprArr[5].x,this.sprArr[5].y-this.sprArr[5].height-30);
         this.m_energyShow.font = "bf_24";
         this.m_energyShow.fontSize = 50;
     };
@@ -24146,9 +24176,11 @@ var GamePlayHudPanel = /** @class */ (function () {
     GamePlayHudPanel.prototype.Show = function () {
         this.rootLayer.visible = true;
         this.coinTf.changeText(GameData.inst.coin.toString());
+        GameWorld.inst.m_gameInput.m_addSpeedInput.SetUI(this.sprArr[5], this.sprArr[6]);
         WXPlatform.inst.ODC_InitHudData();
         this.targetSC.Start(0.3, 4);
         this.targetST.Start(10); //10秒更新一下目标
+        //
     };
     GamePlayHudPanel.prototype.Hide = function () {
         this.rootLayer.visible = false;
@@ -24170,6 +24202,16 @@ var GamePlayHudPanel = /** @class */ (function () {
         //显示能量
         // console.log("========"+GameData.inst.speedPower+"  "+GameData.inst.speedPower.toFixed(1));
         this.m_energyShow.text = GameData.inst.speedPower.toFixed(1) + "/" + GameData.inst.maxPower;
+        // //图标显示
+        // if ( GameWorld.inst.m_gameInput.m_addSpeedInput.CheckCanAddSpeed()) {
+        //     this.sprArr[5].visible=true;
+        //     this.sprArr[6].visible=false;
+        // }
+        // else
+        // {
+        //     this.sprArr[5].visible=false;
+        //     this.sprArr[6].visible=true;
+        // }
     };
     GamePlayHudPanel.prototype.RefreshCoin = function () {
         //TODO 此处可能有性能问题
@@ -24194,14 +24236,12 @@ var GamePlayHudPanel = /** @class */ (function () {
     };
     //点击加速
     GamePlayHudPanel.prototype.OnPressAddSpeed = function () {
-        console.log("````OnPressAddSpeed");
         GameWorld.inst.m_gameInput.m_addSpeedInput.PressSpeedButton();
         var t_imge = this.sprArr[5];
     };
     //释放加速
     GamePlayHudPanel.prototype.OnReleaseAddSpeed = function () {
         GameWorld.inst.m_gameInput.m_addSpeedInput.ReleaseSpeedButton();
-        console.log("`````OnReleaseAddSpeed");
     };
     //-
     GamePlayHudPanel.prototype.OnClickInvite = function () {
@@ -24695,7 +24735,6 @@ var SavedData = /** @class */ (function () {
     };
     SavedData.prototype.Save = function () {
         Laya.LocalStorage.setItem(this.key, this.value.toString());
-        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
         console.log("存档数据", this.key, this.value);
     };
     return SavedData;
@@ -26267,7 +26306,7 @@ var SavedTimeData = /** @class */ (function (_super) {
     };
     SavedTimeData.prototype.Save = function () {
         _super.prototype.Save.call(this);
-        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
+        Laya.LocalStorage.setItem(this.key + "date", GameUtils.GetOrderTime(new Date()).toString());
     };
     /**
      * 获取时间和数据的字符串，格式为数据_时间
@@ -26702,8 +26741,9 @@ var GameRankPage = /** @class */ (function (_super) {
     GameRankPage.prototype.OnUpdate = function () {
         this.rankPane.Update();
     };
-    // public OnHide() {
-    // }
+    GameRankPage.prototype.OnHide = function () {
+        this.rankPane.Clear();
+    };
     //-----------事件处理----------
     GameRankPage.prototype.OnClickBack = function () {
         //console.log("OnClickOKBtn");
@@ -26794,7 +26834,7 @@ var Actor = /** @class */ (function (_super) {
             this.bodyAnim = new Laya.Animation();
             this.bodyAnim.loadAnimation(aniUrl);
             // this.bodyAnim.pivotX=10;
-            this.bodyAnim.pivotY = 100;
+            // this.bodyAnim.pivotY=100;
             // Laya.DebugPanel.init();
             this.bodyAnimDict.set(aniUrl, this.bodyAnim);
         }
@@ -26928,10 +26968,16 @@ var Hero = /** @class */ (function (_super) {
     };
     //private touchStartH
     Hero.prototype.OnMouseDown = function () {
-        GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        var wx = Laya.Browser.window.wx;
+        if (!wx) {
+            GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        }
     };
     Hero.prototype.OnMouseUp = function () {
-        GameWorld.inst.m_gameInput.GetAudioResult(400);
+        var wx = Laya.Browser.window.wx;
+        if (!wx) {
+            GameWorld.inst.m_gameInput.GetAudioResult(400);
+        }
         console.log("OnMouseUp");
     };
     return Hero;
@@ -27456,9 +27502,6 @@ var Main = /** @class */ (function () {
         this.isRunning = true;
         //-打开启动界面
         GamePagesManager.inst.SwitchPage(GameLoadingPage.ID, null);
-        var t_dataOne = (new Date()).getTime();
-        var t_dataTwo = new Date(t_dataOne + 2 * 24 * 60 * 60 * 1000);
-        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&:" + (new Date()).toDateString() + "   " + t_dataTwo.toDateString());
     };
     Main.prototype.InitLaya = function () {
         //初始化微信小游戏

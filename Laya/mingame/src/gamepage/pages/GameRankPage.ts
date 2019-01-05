@@ -88,9 +88,9 @@ class GameRankPage extends GamePage {
         this.rankPane.Update();
     }
 
-    // public OnHide() {
-       
-    // }
+    public OnHide() {
+       this.rankPane.Clear();
+    }
 
     //-----------事件处理----------
     private OnClickBack() {

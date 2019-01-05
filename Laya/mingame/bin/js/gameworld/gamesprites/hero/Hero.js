@@ -122,10 +122,16 @@ var Hero = /** @class */ (function (_super) {
     };
     //private touchStartH
     Hero.prototype.OnMouseDown = function () {
-        GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        var wx = Laya.Browser.window.wx;
+        if (!wx) {
+            GameWorld.inst.m_gameInput.GetAudioResult(4000);
+        }
     };
     Hero.prototype.OnMouseUp = function () {
-        GameWorld.inst.m_gameInput.GetAudioResult(400);
+        var wx = Laya.Browser.window.wx;
+        if (!wx) {
+            GameWorld.inst.m_gameInput.GetAudioResult(400);
+        }
         console.log("OnMouseUp");
     };
     return Hero;

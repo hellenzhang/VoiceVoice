@@ -39,7 +39,7 @@ var SavedTimeData = /** @class */ (function (_super) {
     };
     SavedTimeData.prototype.Save = function () {
         _super.prototype.Save.call(this);
-        Laya.LocalStorage.setItem(this.key + "date", new Date().getTime().toString());
+        Laya.LocalStorage.setItem(this.key + "date", GameUtils.GetOrderTime(new Date()).toString());
     };
     /**
      * 获取时间和数据的字符串，格式为数据_时间

@@ -33,7 +33,7 @@
     //动画，预热用，单个动画解析230ms,极高
     const ANIM_URL_ARR: string[] = [
         "res/hero_ani/hero_0.ani",
-       
+       "res/atlas/hero/hero_jump.ani",
         "res/mob_ani/mob_100.ani",
       
     ];

@@ -19,12 +19,17 @@ D ui
 D hero/hero_0
 P 9C059283 hero0.png
 P 764A6324 hero1.png
+P B98EFBD8 xiaozhuIdle1.png
+P 2CC0203D xiaozhuIdle2.png
+P 4E7565BB xiaozhuJump1.png
+P 7B44A042 xiaozhuJump2.png
 D ui/ui_common
 P AF9C5016 addSpeed.png
 P D3E977B8 btn_close.png
 P 3E6BB435 btn_invite.png
 P B6520E1D btn_left.png
 P D8F111B7 btn_pink.png
+P 38115E76 cdmask.png
 P 2AFA825A img_alert_bg.png
 P 24E23B92 img_black_bg.png
 P 14F34260 img_btn0_bg.png

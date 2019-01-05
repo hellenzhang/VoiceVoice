@@ -2,9 +2,9 @@
     "frames": {
         "btn_invite.png": {
             "frame": {
-                "h": 36,
+                "h": 52,
                 "idx": 0,
-                "w": 231,
+                "w": 256,
                 "x": 0,
                 "y": 0
             },
@@ -13,25 +13,25 @@
                 "w": 256
             },
             "spriteSourceSize": {
-                "x": 2,
-                "y": 10
+                "x": 0,
+                "y": 0
             }
         },
         "img_rankpage_title.png": {
             "frame": {
-                "h": 39,
+                "h": 57,
                 "idx": 0,
-                "w": 123,
+                "w": 130,
                 "x": 0,
-                "y": 37
+                "y": 53
             },
             "sourceSize": {
                 "h": 57,
                 "w": 130
             },
             "spriteSourceSize": {
-                "x": 3,
-                "y": 11
+                "x": 0,
+                "y": 0
             }
         }
     },

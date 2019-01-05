@@ -23,6 +23,7 @@ class GamePlayHudPanel {
         ["3 shareBtn", "btn9", 0, -10, 540, 80, "l", 10, "b", 0, "gameworld/share_btn_bg.png", 80, 80, 20, "gameworld/btn_share.png"],
         ["4 resumeBtn", "btn", 0, 10, 540, -20, "c", 0, "m", 0, "gameworld/ui_btn_resume.png"],
         ["5 addSpeedBtn", "btn",0, 500, 540, 80, "l", 10, "m", 0, "ui/ui_common/addSpeed.png", 80, 80, 20],
+        ["6 cdmask", "btn",0, 500, 540, 80, "l", 10, "m", 0, "ui/ui_common/cdmask.png", 80, 80, 20],
     ];
 
     //持有spr,减少gc清理内容
@@ -67,10 +68,13 @@ class GamePlayHudPanel {
         this.sprArr[0].addChild(this.targetSC);
 
         //绑定位置
-        this.sprArr[5].addChild(this.m_energyShow); 
-        this.m_energyShow.pos(0,-30);//this.sprArr[5].height/2+10
+       // this.sprArr[5].addChild(this.m_energyShow); 
+       this.rootLayer.addChild(this.m_energyShow); 
+        this.m_energyShow.pos(this.sprArr[5].x-this.sprArr[5].width/2,this.sprArr[5].y-this.sprArr[5].height/2-30);//this.sprArr[5].height/2+10
+       // console.log("77777777778888888888888:",this.sprArr[5].x,this.sprArr[5].y-this.sprArr[5].height-30);
         this.m_energyShow.font="bf_24";
         this.m_energyShow.fontSize=50;
+
     }
 
     //gamePlayPage.OnShow()
@@ -78,10 +82,12 @@ class GamePlayHudPanel {
         this.rootLayer.visible = true;
 
         this.coinTf.changeText(GameData.inst.coin.toString());
-
+        GameWorld.inst.m_gameInput.m_addSpeedInput.SetUI(this.sprArr[5],this.sprArr[6]);
         WXPlatform.inst.ODC_InitHudData();
         this.targetSC.Start(0.3,4);
         this.targetST.Start(10);//10秒更新一下目标
+        
+        //
     }
 
     public Hide() {
@@ -109,6 +115,17 @@ class GamePlayHudPanel {
         //显示能量
         // console.log("========"+GameData.inst.speedPower+"  "+GameData.inst.speedPower.toFixed(1));
         this.m_energyShow.text=GameData.inst.speedPower.toFixed(1)+"/"+GameData.inst.maxPower;
+
+        // //图标显示
+        // if ( GameWorld.inst.m_gameInput.m_addSpeedInput.CheckCanAddSpeed()) {
+        //     this.sprArr[5].visible=true;
+        //     this.sprArr[6].visible=false;
+        // }
+        // else
+        // {
+        //     this.sprArr[5].visible=false;
+        //     this.sprArr[6].visible=true;
+        // }
     }
 
 
@@ -141,7 +158,6 @@ class GamePlayHudPanel {
     }
     //点击加速
     private OnPressAddSpeed() {
-         console.log("````OnPressAddSpeed");
          GameWorld.inst.m_gameInput.m_addSpeedInput.PressSpeedButton();
          var t_imge:Laya.Image= (this.sprArr[5] as Laya.Image);
          
@@ -150,7 +166,6 @@ class GamePlayHudPanel {
     //释放加速
     private OnReleaseAddSpeed() {
         GameWorld.inst.m_gameInput.m_addSpeedInput.ReleaseSpeedButton();
-          console.log("`````OnReleaseAddSpeed");
     }
     //-
     private OnClickInvite(){

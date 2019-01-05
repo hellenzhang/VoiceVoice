@@ -65,7 +65,7 @@ var Actor = /** @class */ (function (_super) {
             this.bodyAnim = new Laya.Animation();
             this.bodyAnim.loadAnimation(aniUrl);
             // this.bodyAnim.pivotX=10;
-            this.bodyAnim.pivotY = 100;
+            // this.bodyAnim.pivotY=100;
             // Laya.DebugPanel.init();
             this.bodyAnimDict.set(aniUrl, this.bodyAnim);
         }

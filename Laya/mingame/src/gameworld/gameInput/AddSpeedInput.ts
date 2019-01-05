@@ -29,6 +29,28 @@ class AddSpeedInput {
   private m_currentAddSpeed:number=0;
   //是否按下加速按钮
   private m_isPress=false;
+  private m_uiAddSpeedSprite:Laya.Sprite;
+   private m_uiCDSprite:Laya.Sprite;
+  /**
+   * 设置控制的UI图片
+   */
+  public SetUI(p_sprites,p_cdSprites)
+  {
+      this.m_uiAddSpeedSprite=p_sprites;
+      this.m_uiCDSprite=p_cdSprites;
+      this.SetUIState(this.CheckCanAddSpeed());
+  }
+  private SetUIState(p_isShow) {
+       if (p_isShow) {
+          this.m_uiAddSpeedSprite.visible=false;
+          this.m_uiCDSprite.visible=true;
+      }
+      else
+      {
+          this.m_uiAddSpeedSprite.visible=true;
+          this.m_uiCDSprite.visible=false;
+      }
+  }
   /**
    * GetAddSpeed
  :number  */
@@ -54,12 +76,18 @@ class AddSpeedInput {
   public ReleaseSpeedButton() {
       this.m_isPress=false;
       this.m_currentAddSpeed=0;
+      this.SetUIState(this.CheckCanAddSpeed());
+     
   }
   /**
    * PowerOff
    */
   public CheckPowerOff() {
-       if (GameData.inst.speedPower<=this.m_releasePowerRadio) {
+       if (GameData.inst.speedPower<=this.m_releasePowerRadio) {           
+           if (this.m_currentAddSpeed!=0) {
+               //能量不足===
+                this.SetUIState(false);
+           }
            this.m_currentAddSpeed=0;
       }
   }
@@ -72,7 +100,10 @@ class AddSpeedInput {
          this.PressSpeedButton();
      }
   }
-  private CheckCanAddSpeed():boolean {
+  /**
+   * 检测是否可以加速了
+   */
+  public CheckCanAddSpeed():boolean {
       if (GameData.inst.speedPower>=GameData.inst.minAddSpeedPower) {
            return true;
       }

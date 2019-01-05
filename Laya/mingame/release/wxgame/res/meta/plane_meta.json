@@ -5,7 +5,7 @@
             "name":"hero0",
             "desc":"no!",
             "coin":0,
-            "anim_url":"res/hero_ani/hero_0.ani",
+            "anim_url":"res/hero_ani/hero_jump.ani",
             "hit_rect":[0,0,80,180]
 
         },
